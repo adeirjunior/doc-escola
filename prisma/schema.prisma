@@ -1,0 +1,74 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Aluno {
+  id       String  @id @default(cuid())
+  nome     String  @db.VarChar(150)
+  nome_pai String? @db.VarChar(150)
+  nome_mae String? @db.VarChar(150)
+
+  id_escola  String
+  id_usuario String
+
+  usuario    Usuario     @relation(fields: [id_usuario], references: [id])
+  documentos Documento[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Documento {
+  id        String  @id @default(cuid())
+  codigo    String? @db.VarChar(20)
+  nome      String? @db.VarChar(200)
+  ano_final String? @db.VarChar(4)
+  url       String  @db.VarChar(240)
+
+  id_aluno   String
+  id_escola  String
+  id_usuario String
+
+  escola  Escola  @relation(fields: [id_escola], references: [id])
+  usuario Usuario @relation(fields: [id_usuario], references: [id])
+  aluno   Aluno   @relation(fields: [id_aluno], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Escola {
+  id       String  @id @default(cuid())
+  nome     String  @db.VarChar(150) @unique
+  endereco String  @db.VarChar(100)
+  status   String? @db.VarChar(20)
+
+  id_usuario String
+
+  usuario    Usuario     @relation(fields: [id_usuario], references: [id])
+  documentos Documento[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Usuario {
+  id       String  @id @default(cuid())
+  nome     String? @db.VarChar(100)
+  username String  @unique @db.VarChar(20)
+  senha    String  @db.VarChar(50)
+
+  alunos     Aluno[]
+  documentos Documento[]
+  escolas    Escola[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
