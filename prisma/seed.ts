@@ -14,12 +14,12 @@ async function main() {
             update: {
                 nome: username,
                 username,
-                senha: "123"
+                senha: "12345678"
             },
             create: {
                 nome: username,
                 username,
-                senha: "123"
+                senha: "12345678"
             },
         });
     }

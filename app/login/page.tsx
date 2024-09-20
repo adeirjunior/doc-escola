@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardDescription,
@@ -7,6 +8,8 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { signIn } from '@/lib/auth';
+import { AuthError } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 export default function LoginPage() {
   return (
@@ -22,14 +25,21 @@ export default function LoginPage() {
           <form
             action={async (formData) => {
               'use server';
-              await signIn("credentials", formData, {
-                redirectTo: '/'
-              });
+              try {
+                const data = Object.fromEntries(formData);
+                await signIn("credentials", { ...data });
+              } catch (error) {
+                if (error instanceof AuthError) {
+                  return redirect(`${process.env.NEXTAUTH_URL}/login?error=${error.type}`);
+                }
+                throw error;
+              }
             }}
-            className="w-full"
+            className="w-full flex flex-col gap-2 items-end"
           >
             <Input name="username" type="text" placeholder='Seu login/nome de usuário' />
-            <Input name="password" type="password" placeholder='senha'/>
+            <Input name="senha" type="password" placeholder='Senha' />
+            <Button>Entrar</Button>
           </form>
         </CardFooter>
       </Card>
