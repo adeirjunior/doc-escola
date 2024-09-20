@@ -10,10 +10,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { Documento as DocumentoType } from '@prisma/client';
-import { deleteDocumento } from '@/lib/actions/document';
+import { Escola as EscolaType } from '@prisma/client';
+import { deleteEscola } from '@/lib/actions/school';
 
-export function Documento({ documento }: { documento: DocumentoType }) {
+export function Escola({ escola }: { escola: EscolaType }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -25,16 +25,16 @@ export function Documento({ documento }: { documento: DocumentoType }) {
           width="64"
         />
       </TableCell>
-      <TableCell className="font-medium">{documento.nome}</TableCell>
+      <TableCell className="font-medium">{escola.nome}</TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
-          {documento.criadoEm.toLocaleDateString("pt-BR")}
+          {escola.criadoEm.toLocaleDateString("pt-BR")}
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${documento.codigo}`}</TableCell>
-      <TableCell className="hidden md:table-cell">{documento.ano_final}</TableCell>
+      <TableCell className="hidden md:table-cell">{`$${escola.endereco}`}</TableCell>
+      <TableCell className="hidden md:table-cell">{escola.status}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {documento.atualizadoEm.toLocaleDateString("pt-BR")}
+        {escola.atualizadoEm.toLocaleDateString("pt-BR")}
       </TableCell>
       <TableCell>
         <DropdownMenu>
@@ -48,7 +48,7 @@ export function Documento({ documento }: { documento: DocumentoType }) {
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <DropdownMenuItem>Editar</DropdownMenuItem>
             <DropdownMenuItem>
-              <form action={() => deleteDocumento(documento.id)}>
+              <form action={() => deleteEscola(escola.id)}>
                 <button type="submit">Deletar</button>
               </form>
             </DropdownMenuItem>

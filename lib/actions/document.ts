@@ -20,8 +20,32 @@ export async function findDocumentoById(id: string) {
     });
 }
 
-export async function findAllDocumentos() {
-    return await prisma.documento.findMany();
+export async function findAllDocumentos(search: string, offset: number, limit: number = 10) {
+    const totalDocumentos = await prisma.documento.count({
+        where: {
+            nome: {
+                contains: search,
+            }
+        }
+    });
+
+    const documentos = await prisma.documento.findMany({
+        where: {
+            nome: {
+                contains: search,
+            }
+        },
+        skip: offset,
+        take: limit
+    });
+
+    const newOffset = Math.min(offset + limit, totalDocumentos);
+
+    return {
+        documentos,
+        newOffset,
+        totalDocumentos
+    };
 }
 
 export async function updateDocumento(id: string, data: Partial<{ nome: string, url: string, escolaId?: string, usuarioId?: string, alunoId?: string }>) {

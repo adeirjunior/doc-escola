@@ -17,8 +17,32 @@ export async function findEscolaByNome(nome: string) {
     });
 }
 
-export async function findAllEscolas() {
-    return await prisma.escola.findMany();
+export async function findAllEscolas(search: string, offset: number, limit: number = 10) {
+    const totalEscolas = await prisma.escola.count({
+        where: {
+            nome: {
+                contains: search,
+            }
+        }
+    });
+
+    const escolas = await prisma.escola.findMany({
+        where: {
+            nome: {
+                contains: search,
+            }
+        },
+        skip: offset,
+        take: limit
+    });
+
+    const newOffset = Math.min(offset + limit, totalEscolas);
+
+    return {
+        escolas,
+        newOffset,
+        totalEscolas
+    };
 }
 
 export async function updateEscola(nome: string, data: Partial<{ endereco: string, usuarioId?: string }>) {

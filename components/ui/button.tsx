@@ -37,6 +37,7 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formAction?: any;
 }
 

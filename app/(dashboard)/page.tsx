@@ -1,18 +1,17 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ProductsTable } from './products-table';
-import { findAllAlunos } from '@/lib/actions/student';
+import { DocumentosTable } from './documentos-table';
+import { findAllDocumentos } from '@/lib/actions/document';
 
-
-export default async function ProductsPage({
+export default async function DocumentosPage({
   searchParams
 }: {
   searchParams: { q: string; offset: string };
 }) {
   const search = searchParams.q ?? '';
   const offset = searchParams.offset ?? 0;
-  const { alunos, newOffset, totalAlunos } = await findAllAlunos(
+  const { documentos, newOffset, totalDocumentos } = await findAllDocumentos(
     search,
     Number(offset)
   );
@@ -44,10 +43,10 @@ export default async function ProductsPage({
         </div>
       </div>
       <TabsContent value="all">
-        <ProductsTable
-          alunos={alunos}
+        <DocumentosTable
+          documentos={documentos}
           offset={newOffset ?? 0}
-          totalAlunos={totalAlunos}
+          totalDocumentos={totalDocumentos}
         />
       </TabsContent>
     </Tabs>

@@ -15,18 +15,18 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Documento } from './documento';
+import { Aluno } from './aluno';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Aluno } from '@prisma/client';
+import { Aluno as AlunoType } from '@prisma/client';
 
-export function ProductsTable({
+export function AlunosTable({
   alunos,
   offset,
   totalAlunos
 }: {
-  alunos: Aluno[];
+    alunos: AlunoType[];
   offset: number;
   totalAlunos: number;
 }) {
@@ -44,9 +44,9 @@ export function ProductsTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Documentos</CardTitle>
+        <CardTitle>Alunos</CardTitle>
         <CardDescription>
-          Visualize e gerencie todos os documentos.
+          Visualize e gerencie todos os alunos.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -70,7 +70,7 @@ export function ProductsTable({
           </TableHeader>
           <TableBody>
             {alunos.map((aluno) => (
-              <Documento key={aluno.id} aluno={aluno} />
+              <Aluno key={aluno.id} aluno={aluno} />
             ))}
           </TableBody>
         </Table>
