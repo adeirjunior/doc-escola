@@ -7,11 +7,17 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { signIn } from '@/lib/auth';
+import { signIn, auth } from '@/lib/auth';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const session = await auth()
+
+  if(session) {
+    redirect("/")
+  }
+
   return (
     <div className="min-h-screen flex justify-center items-start md:items-center p-8">
       <Card className="w-full max-w-sm">
