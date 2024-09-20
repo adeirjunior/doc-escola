@@ -11,8 +11,8 @@ export function SearchInput() {
   const [isPending, startTransition] = useTransition();
 
   function searchAction(formData: FormData) {
-    let value = formData.get('q') as string;
-    let params = new URLSearchParams({ q: value });
+    const value = formData.get('q') as string;
+    const params = new URLSearchParams({ q: value });
     startTransition(() => {
       router.replace(`/?${params.toString()}`);
     });
@@ -24,7 +24,7 @@ export function SearchInput() {
       <Input
         name="q"
         type="search"
-        placeholder="Search..."
+        placeholder="Pesquisa..."
         className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
       />
       {isPending && <Spinner />}

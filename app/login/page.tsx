@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
   Card,
   CardDescription,
@@ -16,7 +15,7 @@ export default function LoginPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
-            This demo uses GitHub for authentication.
+            Coloque o login e a senha que te foram informados.
           </CardDescription>
         </CardHeader>
         <CardFooter>
@@ -29,8 +28,8 @@ export default function LoginPage() {
             }}
             className="w-full"
           >
-            <Input name="username" type="text" />
-            <Input name="password" type="password" />
+            <Input name="username" type="text" placeholder='Seu login/nome de usuário' />
+            <Input name="password" type="password" placeholder='senha'/>
           </form>
         </CardFooter>
       </Card>

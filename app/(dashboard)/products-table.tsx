@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Product } from './product';
+import { Documento } from './documento';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,8 +30,8 @@ export function ProductsTable({
   offset: number;
   totalAlunos: number;
 }) {
-  let router = useRouter();
-  let productsPerPage = 5;
+  const router = useRouter();
+  const productsPerPage = 5;
 
   function prevPage() {
     router.back();
@@ -44,9 +44,9 @@ export function ProductsTable({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
+        <CardTitle>Documentos</CardTitle>
         <CardDescription>
-          Manage your products and view their sales performance.
+          Visualize e gerencie todos os documentos.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -54,23 +54,23 @@ export function ProductsTable({
           <TableHeader>
             <TableRow>
               <TableHead className="hidden w-[100px] sm:table-cell">
-                <span className="sr-only">Image</span>
+                <span className="sr-only">Imagem</span>
               </TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>Nome</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Price</TableHead>
               <TableHead className="hidden md:table-cell">
                 Total Sales
               </TableHead>
-              <TableHead className="hidden md:table-cell">Created at</TableHead>
+              <TableHead className="hidden md:table-cell">Criado em</TableHead>
               <TableHead>
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">Ações</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {alunos.map((aluno) => (
-              <Product key={aluno.id} aluno={aluno} />
+              <Documento key={aluno.id} aluno={aluno} />
             ))}
           </TableBody>
         </Table>
@@ -78,11 +78,11 @@ export function ProductsTable({
       <CardFooter>
         <form className="flex items-center w-full justify-between">
           <div className="text-xs text-muted-foreground">
-            Showing{' '}
+            Mostrando{' '}
             <strong>
               {Math.min(offset - productsPerPage, totalAlunos) + 1}-{offset}
             </strong>{' '}
-            of <strong>{totalAlunos}</strong> products
+            de <strong>{totalAlunos}</strong> documentos
           </div>
           <div className="flex">
             <Button
@@ -93,7 +93,7 @@ export function ProductsTable({
               disabled={offset === productsPerPage}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
-              Prev
+              Anterior
             </Button>
             <Button
               formAction={nextPage}
@@ -102,7 +102,7 @@ export function ProductsTable({
               type="submit"
               disabled={offset + productsPerPage > totalAlunos}
             >
-              Next
+              Próximo
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>

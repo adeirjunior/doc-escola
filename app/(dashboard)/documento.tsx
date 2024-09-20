@@ -13,7 +13,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { Aluno } from '@prisma/client';
 import { deleteAluno } from '@/lib/actions/student';
 
-export function Product({ aluno }: { aluno: Aluno }) {
+export function Documento({ aluno }: { aluno: Aluno }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -45,11 +45,11 @@ export function Product({ aluno }: { aluno: Aluno }) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuItem>Editar</DropdownMenuItem>
             <DropdownMenuItem>
               <form action={() => deleteAluno(aluno.id)}>
-                <button type="submit">Delete</button>
+                <button type="submit">Deletar</button>
               </form>
             </DropdownMenuItem>
           </DropdownMenuContent>
