@@ -17,7 +17,7 @@ export default async function AlunosPage({
   );
 
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="active">
       <div className="flex items-center">
         <TabsList>
           <TabsTrigger value="all">Todos</TabsTrigger>
@@ -43,6 +43,27 @@ export default async function AlunosPage({
         </div>
       </div>
       <TabsContent value="all">
+        <AlunosTable
+          alunos={alunos}
+          offset={newOffset ?? 0}
+          totalAlunos={totalAlunos}
+        />
+      </TabsContent>
+      <TabsContent value="active">
+        <AlunosTable
+          alunos={alunos}
+          offset={newOffset ?? 0}
+          totalAlunos={totalAlunos}
+        />
+      </TabsContent>
+      <TabsContent value="draft">
+        <AlunosTable
+          alunos={alunos}
+          offset={newOffset ?? 0}
+          totalAlunos={totalAlunos}
+        />
+      </TabsContent>
+      <TabsContent value="archived">
         <AlunosTable
           alunos={alunos}
           offset={newOffset ?? 0}

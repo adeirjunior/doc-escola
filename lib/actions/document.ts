@@ -1,12 +1,14 @@
 "use server"
 import prisma from "./../prisma";
 
-export async function createDocumento(id: string, nome: string, url: string, escolaId: string, usuarioId: string, alunoId: string) {
+export async function createDocumento(id: string, nome: string, url: string, escolaId: string, usuarioId: string, alunoId: string, codigo: number, ano_final: number) {
     return await prisma.documento.create({
         data: {
             id,
             nome,
             url,
+            codigo,
+            ano_final,
             escola: { connect: { id: escolaId } },
             usuario: { connect: { id: usuarioId } },
             aluno: { connect: { id: alunoId } }
@@ -26,7 +28,7 @@ export async function findAllDocumentos(search: string, offset: number, limit: n
             nome: {
                 contains: search,
             }
-        }
+        },
     });
 
     const documentos = await prisma.documento.findMany({
@@ -34,6 +36,10 @@ export async function findAllDocumentos(search: string, offset: number, limit: n
             nome: {
                 contains: search,
             }
+        },
+        include: {
+            aluno: true,
+            escola: true
         },
         skip: offset,
         take: limit

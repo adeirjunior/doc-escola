@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 
 async function main() {
     const usuarios = ['adeir', 'maria'];
-    const escolas = ['adeir', 'maria'];
+    const escolas = ['ESCOLA MUNICIPAL PROF. GUILHERME MACHADO DE SOUZA', 'ESCOLA MUNICIPAL ANTÔNIO BORGES DA FONSECA'];
     const documentos = ['adeir', 'maria'];
     const alunos = ['adeir', 'maria'];
 
@@ -34,12 +34,14 @@ async function main() {
                 where: { nome },
                 update: {
                     nome,
-                    endereco: "Rua A, 42343, Bairro Central",
+                    endereco: "LINHA 152 GLEBA 09 LOTE 28 KM 12 NORTE",
+                    status: "ativo",
                     usuario: { connect: { id: usuario.id } }
                 },
                 create: {
                     nome,
-                    endereco: "Rua A, 42343, Bairro Central",
+                    endereco: "LINHA 152 GLEBA 09 LOTE 28 KM 12 NORTE",
+                    status: "ativo",
                     usuario: { connect: { id: usuario.id } }
                 },
             });
@@ -75,7 +77,9 @@ async function main() {
                     url: "http://192.168.3.32/doc-escola/old/3/73543.pdf",
                     escola: { connect: { id: escola.id } },
                     usuario: { connect: { id: usuario.id } },
-                    aluno: { connect: { id: aluno.id } }
+                    aluno: { connect: { id: aluno.id } },
+                    ano_final: 2008,
+                    codigo: 1
                 },
             });
         }

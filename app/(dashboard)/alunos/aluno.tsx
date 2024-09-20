@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,33 +7,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Users2 } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Aluno as AlunoType } from '@prisma/client';
 import { deleteAluno } from '@/lib/actions/student';
 
-export function Aluno({ aluno }: { aluno: AlunoType }) {
+export function Aluno({ aluno }: { aluno: AlunoType & { _count: { documentos: number } } }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
-        <Image
-          alt="Product image"
-          className="aspect-square rounded-md object-cover"
-          height="64"
-          src='/placeholder-user.jpg'
-          width="64"
-        />
+        <Users2 width={32} height={32} className='text-muted-foreground mx-auto' />
       </TableCell>
       <TableCell className="font-medium">{aluno.nome}</TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
-          {aluno.criadoEm.toLocaleDateString("pt-BR")}
+          {aluno.status}
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${aluno.nome_mae}`}</TableCell>
       <TableCell className="hidden md:table-cell">{aluno.nome_pai}</TableCell>
+      <TableCell className="hidden md:table-cell">{aluno.nome_mae}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {aluno.atualizadoEm.toLocaleDateString("pt-BR")}
+        {aluno._count.documentos}
       </TableCell>
       <TableCell>
         <DropdownMenu>

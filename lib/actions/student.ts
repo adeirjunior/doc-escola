@@ -33,12 +33,18 @@ export async function findAllAlunos(search: string, offset: number, limit: numbe
                 contains: search,
             }
         },
+        include: {
+            _count: {
+                select: {
+                    documentos: true
+                }
+            }
+        },
         skip: offset,
         take: limit
     });
 
     const newOffset = Math.min(offset + limit, totalAlunos);
-
     return {
         alunos,
         newOffset,

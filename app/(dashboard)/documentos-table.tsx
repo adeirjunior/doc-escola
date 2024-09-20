@@ -19,14 +19,14 @@ import { Documento } from './documento';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Documento as DocumentoType } from '@prisma/client';
+import { Aluno, Documento as DocumentoType, Escola } from '@prisma/client';
 
 export function DocumentosTable({
   documentos,
   offset,
   totalDocumentos
 }: {
-    documentos: DocumentoType[];
+    documentos: (DocumentoType & { aluno: Aluno, escola: Escola })[];
   offset: number;
   totalDocumentos: number;
 }) {
@@ -56,13 +56,13 @@ export function DocumentosTable({
               <TableHead className="hidden w-[100px] sm:table-cell">
                 <span className="sr-only">Imagem</span>
               </TableHead>
-              <TableHead>Nome</TableHead>
+              <TableHead>Código</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
+              <TableHead className="hidden md:table-cell">Ano Final</TableHead>
               <TableHead className="hidden md:table-cell">
-                Total Sales
+                Escola
               </TableHead>
-              <TableHead className="hidden md:table-cell">Criado em</TableHead>
+              <TableHead className="hidden md:table-cell">Aluno</TableHead>
               <TableHead>
                 <span className="sr-only">Ações</span>
               </TableHead>

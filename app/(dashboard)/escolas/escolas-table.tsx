@@ -58,11 +58,10 @@ export function EscolasTable({
               </TableHead>
               <TableHead>Nome</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
+              <TableHead className="hidden md:table-cell">Endereço</TableHead>
               <TableHead className="hidden md:table-cell">
-                Total Sales
+                Alunos
               </TableHead>
-              <TableHead className="hidden md:table-cell">Criado em</TableHead>
               <TableHead>
                 <span className="sr-only">Ações</span>
               </TableHead>

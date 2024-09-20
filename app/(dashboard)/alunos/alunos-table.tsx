@@ -26,7 +26,7 @@ export function AlunosTable({
   offset,
   totalAlunos
 }: {
-    alunos: AlunoType[];
+    alunos: (AlunoType & {_count: {documentos: number}})[];
   offset: number;
   totalAlunos: number;
 }) {
@@ -58,11 +58,11 @@ export function AlunosTable({
               </TableHead>
               <TableHead>Nome</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
+              <TableHead className="hidden md:table-cell">Nome do Pai</TableHead>
               <TableHead className="hidden md:table-cell">
-                Total Sales
+                Nome da Mãe
               </TableHead>
-              <TableHead className="hidden md:table-cell">Criado em</TableHead>
+              <TableHead className="hidden md:table-cell">Documentos</TableHead>
               <TableHead>
                 <span className="sr-only">Ações</span>
               </TableHead>

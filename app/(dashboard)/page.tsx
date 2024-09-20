@@ -16,8 +16,12 @@ export default async function DocumentosPage({
     Number(offset)
   );
 
+  if(!documentos) {
+    throw new Error("Banco de dados não esta funcionando.")
+  }
+
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="active">
       <div className="flex items-center">
         <TabsList>
           <TabsTrigger value="all">Todos</TabsTrigger>
@@ -43,6 +47,27 @@ export default async function DocumentosPage({
         </div>
       </div>
       <TabsContent value="all">
+        <DocumentosTable
+          documentos={documentos}
+          offset={newOffset ?? 0}
+          totalDocumentos={totalDocumentos}
+        />
+      </TabsContent>
+      <TabsContent value="active">
+        <DocumentosTable
+          documentos={documentos}
+          offset={newOffset ?? 0}
+          totalDocumentos={totalDocumentos}
+        />
+      </TabsContent>
+      <TabsContent value="draft">
+        <DocumentosTable
+          documentos={documentos}
+          offset={newOffset ?? 0}
+          totalDocumentos={totalDocumentos}
+        />
+      </TabsContent>
+      <TabsContent value="archived">
         <DocumentosTable
           documentos={documentos}
           offset={newOffset ?? 0}

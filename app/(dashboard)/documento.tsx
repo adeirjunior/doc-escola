@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,33 +7,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
+import { FileText, MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { Documento as DocumentoType } from '@prisma/client';
+import { Aluno, Documento as DocumentoType, Escola } from '@prisma/client';
 import { deleteDocumento } from '@/lib/actions/document';
 
-export function Documento({ documento }: { documento: DocumentoType }) {
+export function Documento({ documento }: { documento: DocumentoType & {aluno: Aluno, escola: Escola} }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
-        <Image
-          alt="Product image"
-          className="aspect-square rounded-md object-cover"
-          height="64"
-          src='/placeholder-user.jpg'
-          width="64"
-        />
+        <FileText width={32} height={32} className='text-muted-foreground mx-auto'/>
       </TableCell>
-      <TableCell className="font-medium">{documento.nome}</TableCell>
+      <TableCell className="font-medium">{documento.codigo}</TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
-          {documento.criadoEm.toLocaleDateString("pt-BR")}
+          {documento.status}
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${documento.codigo}`}</TableCell>
       <TableCell className="hidden md:table-cell">{documento.ano_final}</TableCell>
+      <TableCell className="hidden md:table-cell">{documento.escola.nome}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {documento.atualizadoEm.toLocaleDateString("pt-BR")}
+        {documento.aluno.nome}
       </TableCell>
       <TableCell>
         <DropdownMenu>

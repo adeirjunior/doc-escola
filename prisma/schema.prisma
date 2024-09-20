@@ -1,5 +1,3 @@
-// schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,11 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Status {
+  ativo
+  rascunho
+  arquivado
+}
+
 model Aluno {
   id       String  @id @default(cuid())
   nome     String  @db.VarChar(150)
   nome_pai String? @db.VarChar(150)
   nome_mae String? @db.VarChar(150)
+
+  status   Status  @default(rascunho)
 
   id_escola  String
   id_usuario String
@@ -27,10 +33,12 @@ model Aluno {
 
 model Documento {
   id        String  @id @default(cuid())
-  codigo    String? @db.VarChar(20)
-  nome      String? @db.VarChar(200)
-  ano_final String? @db.VarChar(4)
   url       String  @db.VarChar(240)
+  nome      String? @db.VarChar(200)
+  codigo    Int
+  ano_final Int
+
+  status    Status  @default(rascunho)
 
   id_aluno   String
   id_escola  String
@@ -45,10 +53,11 @@ model Documento {
 }
 
 model Escola {
-  id       String  @id @default(cuid())
-  nome     String  @db.VarChar(150) @unique
-  endereco String  @db.VarChar(100)
-  status   String? @db.VarChar(20)
+  id       String @id @default(cuid())
+  nome     String @unique @db.VarChar(150)
+  endereco String @db.VarChar(100)
+
+  status   Status @default(rascunho)
 
   id_usuario String
 
@@ -64,6 +73,8 @@ model Usuario {
   nome     String? @db.VarChar(100)
   username String  @unique @db.VarChar(20)
   senha    String  @db.VarChar(50)
+
+  status   Status  @default(rascunho)
 
   alunos     Aluno[]
   documentos Documento[]
