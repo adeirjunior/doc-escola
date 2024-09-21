@@ -101,7 +101,6 @@ async function main() {
                 create: {
                     id,
                     nome: "Ade",
-                    id_escola: escola.id,
                     usuario: { connect: { id: usuario.id } }
                 },
             });

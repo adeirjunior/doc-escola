@@ -22,7 +22,7 @@ export async function findDocumentoById(id: string) {
     });
 }
 
-export async function findAllDocumentos(search: string, offset: number, limit: number = 10) {
+export async function findAllDocumentos(search: string, offset: number, limit: number = 6) {
     const totalDocumentos = await prisma.documento.count({
         where: {
             nome: {

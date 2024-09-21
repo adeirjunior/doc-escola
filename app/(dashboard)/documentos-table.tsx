@@ -26,19 +26,23 @@ export function DocumentosTable({
   offset,
   totalDocumentos
 }: {
-    documentos: (DocumentoType & { aluno: Aluno, escola: Escola })[];
+    documentos: (DocumentoType & { aluno: Aluno | null; escola: Escola | null })[];
   offset: number;
   totalDocumentos: number;
 }) {
   const router = useRouter();
-  const productsPerPage = 5;
+  const documentsPerPage = 5;
 
   function prevPage() {
-    router.back();
+    if (offset > 0) {
+      router.push(`/?offset=${offset - documentsPerPage}`, { scroll: false });
+    }
   }
 
   function nextPage() {
-    router.push(`/?offset=${offset}`, { scroll: false });
+    if (offset + documentsPerPage < totalDocumentos) {
+      router.push(`/?offset=${offset + documentsPerPage}`, { scroll: false });
+    }
   }
 
   return (
@@ -59,9 +63,7 @@ export function DocumentosTable({
               <TableHead>Código</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Ano Final</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Escola
-              </TableHead>
+              <TableHead className="hidden md:table-cell">Escola</TableHead>
               <TableHead className="hidden md:table-cell">Aluno</TableHead>
               <TableHead>
                 <span className="sr-only">Ações</span>
@@ -80,27 +82,27 @@ export function DocumentosTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset - productsPerPage, totalDocumentos) + 1}-{offset}
+              {Math.max(1, offset + 1)}-{Math.min(offset + documentsPerPage, totalDocumentos)}
             </strong>{' '}
             de <strong>{totalDocumentos}</strong> documentos
           </div>
           <div className="flex">
             <Button
-              formAction={prevPage}
+              onClick={prevPage}
               variant="ghost"
               size="sm"
-              type="submit"
-              disabled={offset === productsPerPage}
+              type="button"
+              disabled={offset <= 0}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Anterior
             </Button>
             <Button
-              formAction={nextPage}
+              onClick={nextPage}
               variant="ghost"
               size="sm"
-              type="submit"
-              disabled={offset + productsPerPage > totalDocumentos}
+              type="button"
+              disabled={offset + documentsPerPage >= totalDocumentos}
             >
               Próximo
               <ChevronRight className="ml-2 h-4 w-4" />

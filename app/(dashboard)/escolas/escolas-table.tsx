@@ -1,53 +1,45 @@
-'use client';
-
-import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableBody,
-  Table
-} from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Escola } from './escola';
-import { useRouter } from 'next/navigation';
+"use client"
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableHead, TableRow, TableHeader } from '@/components/ui/table';
+import { Escola } from './escola';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Escola as EscolaType } from '@prisma/client';
 
 export function EscolasTable({
   escolas,
   offset,
-  totalEscolas
+  totalEscolas,
+  limit
 }: {
-    escolas: (EscolaType & { totalAlunos: number })[];
+  escolas: (EscolaType & { totalAlunos: number })[];
   offset: number;
   totalEscolas: number;
+  limit: number;
 }) {
   const router = useRouter();
-  const productsPerPage = 5;
+  const searchParams = useSearchParams();
 
   function prevPage() {
-    router.back();
+    const newOffset = Math.max(0, offset - limit * 2);
+
+    const queryString = `${newOffset <= 0 ? " " : `?offset=${newOffset}`}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`;
+
+    router.push(`/escolas${queryString}`);
   }
 
   function nextPage() {
-    router.push(`/?offset=${offset}`, { scroll: false });
+    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`;
+
+    router.push(`/escolas${queryString}`, { scroll: false });
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Escolas</CardTitle>
-        <CardDescription>
-          Visualize e gerencie todas as escolas.
-        </CardDescription>
+        <CardDescription>Visualize e gerencie todas as escolas.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -59,9 +51,7 @@ export function EscolasTable({
               <TableHead>Nome</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Endereço</TableHead>
-              <TableHead className="hidden md:table-cell">
-                Alunos
-              </TableHead>
+              <TableHead className="hidden md:table-cell">Alunos</TableHead>
               <TableHead>
                 <span className="sr-only">Ações</span>
               </TableHead>
@@ -79,9 +69,9 @@ export function EscolasTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset - productsPerPage, totalEscolas) + 1}-{offset}
+              {Math.min(offset - limit, totalEscolas) + 1}-{offset}
             </strong>{' '}
-            de <strong>{totalEscolas}</strong> documentos
+            de <strong>{totalEscolas}</strong> escolas
           </div>
           <div className="flex">
             <Button
@@ -89,7 +79,7 @@ export function EscolasTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset === productsPerPage}
+              disabled={offset === limit}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Anterior
@@ -99,14 +89,15 @@ export function EscolasTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset + productsPerPage > totalEscolas}
+              disabled={offset + limit > totalEscolas}
             >
-              Próximo
+              Próxima
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </form>
       </CardFooter>
+
     </Card>
   );
 }

@@ -12,7 +12,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { Aluno, Documento as DocumentoType, Escola } from '@prisma/client';
 import { deleteDocumento } from '@/lib/actions/document';
 
-export function Documento({ documento }: { documento: DocumentoType & {aluno: Aluno, escola: Escola} }) {
+export function Documento({ documento }: { documento: DocumentoType & {aluno: Aluno | null, escola: Escola | null} }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -25,9 +25,9 @@ export function Documento({ documento }: { documento: DocumentoType & {aluno: Al
         </Badge>
       </TableCell>
       <TableCell className="hidden md:table-cell">{documento.ano_final}</TableCell>
-      <TableCell className="hidden md:table-cell">{documento.escola.nome}</TableCell>
+      <TableCell className="hidden md:table-cell">{documento.escola?.nome}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {documento.aluno.nome}
+        {documento.aluno?.nome}
       </TableCell>
       <TableCell>
         <DropdownMenu>

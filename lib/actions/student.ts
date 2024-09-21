@@ -6,7 +6,6 @@ export async function createAluno(id: string, nome: string, id_escola: string, u
         data: {
             id,
             nome,
-            id_escola,
             usuario: { connect: { id: usuarioId } }
         }
     });
@@ -52,12 +51,11 @@ export async function findAllAlunos(search: string, offset: number, limit: numbe
     };
 }
 
-export async function updateAluno(id: string, data: Partial<{ nome: string, id_escola?: string, usuarioId?: string }>) {
+export async function updateAluno(id: string, data: Partial<{ nome: string, usuarioId?: string }>) {
     return await prisma.aluno.update({
         where: { id },
         data: {
             ...data,
-            id_escola: data.id_escola,
             usuario: data.usuarioId ? { connect: { id: data.usuarioId } } : undefined
         }
     });

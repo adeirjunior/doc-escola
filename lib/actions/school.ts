@@ -1,6 +1,7 @@
 "use server"
 import { revalidatePath } from "next/cache";
 import prisma from "./../prisma";
+import { Status } from "@prisma/client";
 
 export async function createEscola(usuarioId: string) {
     if (!usuarioId) {
@@ -26,12 +27,14 @@ export async function findEscolaById(id: string) {
     });
 }
 
-export async function findAllEscolas(search: string | null | undefined, offset: number, limit: number = 10) {
-    const whereClause = search ? {
-        nome: {
-            contains: search,
+export async function findAllEscolas(search: string | null | undefined, offset: number = 0, limit: number = 6) {
+    const whereClause = search
+        ? {
+            nome: {
+                contains: search,
+            },
         }
-    } : undefined;
+        : undefined;
 
     const totalEscolas = await prisma.escola.count({
         where: whereClause,
@@ -43,41 +46,52 @@ export async function findAllEscolas(search: string | null | undefined, offset: 
         take: limit,
     });
 
-    const escolasComContagem = await Promise.all(escolas.map(async (escola) => {
-        const alunos = await prisma.documento.findMany({
-            where: {
-                id_escola: escola.id,
-            },
-            select: {
-                id_aluno: true,
-            },
-        });
+    const escolasComContagem = await Promise.all(
+        escolas.map(async (escola) => {
+            const alunos = await prisma.documento.findMany({
+                where: {
+                    id_escola: escola.id,
+                },
+                select: {
+                    id_aluno: true,
+                },
+            });
 
-        const totalAlunos = new Set(alunos.map(doc => doc.id_aluno)).size; // Usando Set para contar alunos distintos
-        
-        return {
-            ...escola,
-            totalAlunos,
-        };
-    }));
+            const totalAlunos = new Set(alunos.map((doc) => doc.id_aluno)).size;
 
-    const newOffset = Math.min(offset + limit, totalEscolas);
-    
+            return {
+                ...escola,
+                totalAlunos,
+            };
+        })
+    );
+
     return {
         escolas: escolasComContagem,
-        newOffset,
-        totalEscolas
+        newOffset: offset + limit,
+        totalEscolas,
+        limit
     };
 }
 
-export async function updateEscola(nome: string, data: Partial<{ endereco: string, usuarioId?: string }>) {
-    return await prisma.escola.update({
-        where: { nome },
+
+export async function updateEscola(id: string, formData: FormData) {
+    const nome = formData.get("nome") as string;
+    const endereco = formData.get("endereco") as string;
+    const status = formData.get("status") as Status;
+
+    const escola = await prisma.escola.update({
+        where: { id },
         data: {
-            ...data,
-            usuario: data.usuarioId ? { connect: { id: data.usuarioId } } : undefined
+            nome,
+            endereco,
+            status
         }
     });
+
+    revalidatePath(`/escolas/${id}`)
+
+    return escola
 }
 
 export async function deleteEscola(id: string) {

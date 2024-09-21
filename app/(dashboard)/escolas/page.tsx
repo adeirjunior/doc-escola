@@ -13,11 +13,11 @@ export default async function EscolasPage({
 }) {
     const session = await auth();
     const search = searchParams.q ?? '';
-    const offset = searchParams.offset ? Number(searchParams.offset) : 0;
+    const offset = searchParams.offset ?? 0;
 
-    const { escolas, newOffset, totalEscolas } = await findAllEscolas(
+    const { escolas, newOffset, totalEscolas, limit } = await findAllEscolas(
         search,
-        offset
+        Number(offset)
     );
 
     if (!session?.user?.id) {
@@ -59,12 +59,14 @@ export default async function EscolasPage({
             <TabsContent value="all">
                 <EscolasTable
                     escolas={escolas}
+                    limit={limit}
                     offset={newOffset ?? 0}
                     totalEscolas={totalEscolas}
                 />
             </TabsContent>
             <TabsContent value="active">
                 <EscolasTable
+                limit={limit}
                     escolas={escolas}
                     offset={newOffset ?? 0}
                     totalEscolas={totalEscolas}
@@ -72,6 +74,7 @@ export default async function EscolasPage({
             </TabsContent>
             <TabsContent value="draft">
                 <EscolasTable
+                    limit={limit}
                     escolas={escolas}
                     offset={newOffset ?? 0}
                     totalEscolas={totalEscolas}
@@ -80,6 +83,7 @@ export default async function EscolasPage({
             <TabsContent value="archived">
                 <EscolasTable
                     escolas={escolas}
+                    limit={limit}
                     offset={newOffset ?? 0}
                     totalEscolas={totalEscolas}
                 />

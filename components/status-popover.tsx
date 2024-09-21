@@ -26,7 +26,7 @@ import {
 import { Status as StatusType } from '@prisma/client';
 
 type Status = {
-    value: StatusType // aqui utilizamos o tipo do Prisma para alinhar os valores
+    value: StatusType
     label: string
     icon: LucideIcon
 }
@@ -49,11 +49,11 @@ const statuses: Status[] = [
     },
 ]
 
-export function ComboboxPopover({ defaultValue }: { defaultValue: StatusType }) {
-    const [open, setOpen] = React.useState(false)
+export function ComboboxPopover({ defaultValue, name }: { defaultValue: StatusType; name: string }) {
+    const [open, setOpen] = React.useState(false);
     const [selectedStatus, setSelectedStatus] = React.useState<Status | null>(
         statuses.find((status) => status.value === defaultValue) || null
-    )
+    );
 
     return (
         <div className="flex w-full items-center space-x-4">
@@ -77,7 +77,7 @@ export function ComboboxPopover({ defaultValue }: { defaultValue: StatusType }) 
                 </PopoverTrigger>
                 <PopoverContent className="p-0" side="right" align="start">
                     <Command>
-                        <CommandInput placeholder="Mudar status..." />
+                        <CommandInput placeholder="Pesquisar status..." />
                         <CommandList>
                             <CommandEmpty>Sem resultados encontrados.</CommandEmpty>
                             <CommandGroup>
@@ -86,9 +86,9 @@ export function ComboboxPopover({ defaultValue }: { defaultValue: StatusType }) 
                                         key={status.value}
                                         value={status.value}
                                         onSelect={(value) => {
-                                            const selected = statuses.find((s) => s.value === value) || null
-                                            setSelectedStatus(selected)
-                                            setOpen(false)
+                                            const selected = statuses.find((s) => s.value === value) || null;
+                                            setSelectedStatus(selected);
+                                            setOpen(false);
                                         }}
                                     >
                                         <status.icon
@@ -107,6 +107,9 @@ export function ComboboxPopover({ defaultValue }: { defaultValue: StatusType }) 
                     </Command>
                 </PopoverContent>
             </Popover>
+
+            {/* Input oculto para o status */}
+            <input type="hidden" name={name} value={selectedStatus?.value || ""} />
         </div>
-    )
+    );
 }
