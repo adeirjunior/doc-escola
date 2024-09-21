@@ -11,8 +11,9 @@ import { MoreHorizontal, School } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Escola as EscolaType } from '@prisma/client';
 import { deleteEscola } from '@/lib/actions/school';
+import Link from 'next/link';
 
-export function Escola({ escola }: { escola: EscolaType }) {
+export function Escola({ escola }: { escola: EscolaType & {totalAlunos: number} }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
@@ -25,7 +26,7 @@ export function Escola({ escola }: { escola: EscolaType }) {
         </Badge>
       </TableCell>
       <TableCell className="hidden md:table-cell">{escola.endereco}</TableCell>
-      <TableCell className="hidden md:table-cell">{escola.status}</TableCell>
+      <TableCell className="hidden md:table-cell">{escola.totalAlunos}</TableCell>
       <TableCell>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -36,7 +37,11 @@ export function Escola({ escola }: { escola: EscolaType }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/escolas/${escola.id}`}>
+               Editar
+              </Link>
+              </DropdownMenuItem>
             <DropdownMenuItem>
               <form action={() => deleteEscola(escola.id)}>
                 <button type="submit">Deletar</button>

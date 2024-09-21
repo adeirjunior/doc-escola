@@ -1,11 +1,20 @@
-import Link from 'next/link'
+import GoBackwardButton from '@/components/go-backward-button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function NotFound() {
     return (
-        <div>
-            <h2>Página não encontrada</h2>
-            <p>Could not find requested resource</p>
-            <Link href="/">Return Home</Link>
-        </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>Página não encontrada</CardTitle>
+                <CardDescription>
+                    Não foi possível encontrar as informações que voce esta requisitando.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+            </CardContent>
+            <CardFooter className="justify-end">
+                <GoBackwardButton/>
+            </CardFooter>
+        </Card>
     )
 }

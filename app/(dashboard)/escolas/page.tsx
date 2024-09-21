@@ -1,20 +1,28 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { File, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { findAllEscolas } from '@/lib/actions/school';
+import { createEscola, findAllEscolas } from '@/lib/actions/school';
 import { EscolasTable } from './escolas-table';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export default async function EscolasPage({
     searchParams
 }: {
-    searchParams: { q: string; offset: string };
+    searchParams: { q: string | undefined; offset: string | undefined };
 }) {
+    const session = await auth();
     const search = searchParams.q ?? '';
-    const offset = searchParams.offset ?? 0;
+    const offset = searchParams.offset ? Number(searchParams.offset) : 0;
+
     const { escolas, newOffset, totalEscolas } = await findAllEscolas(
         search,
-        Number(offset)
+        offset
     );
+
+    if (!session?.user?.id) {
+        return <div>Unable to create school, user not logged in.</div>;
+    }
 
     return (
         <Tabs defaultValue="active">
@@ -34,12 +42,18 @@ export default async function EscolasPage({
                             Exportar
                         </span>
                     </Button>
-                    <Button size="sm" className="h-8 gap-1">
-                        <PlusCircle className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                            Adicionar Escola
-                        </span>
-                    </Button>
+                    <form action={async () => {
+                        "use server"
+                        const escola = await createEscola(session.user?.id as string);
+                        redirect(`/escolas/${escola.id}`);
+                    }}>
+                        <Button size="sm" className="h-8 gap-1">
+                            <PlusCircle className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                Adicionar Escola
+                            </span>
+                        </Button>
+                    </form>
                 </div>
             </div>
             <TabsContent value="all">
@@ -73,3 +87,4 @@ export default async function EscolasPage({
         </Tabs>
     );
 }
+

@@ -26,7 +26,7 @@ export function EscolasTable({
   offset,
   totalEscolas
 }: {
-    escolas: EscolaType[];
+    escolas: (EscolaType & { totalAlunos: number })[];
   offset: number;
   totalEscolas: number;
 }) {

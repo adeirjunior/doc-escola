@@ -37,8 +37,7 @@ const providers: Provider[] = [
         }
         return null;
       }
-    }
-
+    },
   }),
 ];
 
@@ -49,8 +48,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     authorized: async ({ auth }) => {
-      return !!auth
+      return !!auth;
     },
+    async jwt({ token, user }) {
+      // Aqui o token é combinado com o user (se existir)
+      if (user) {
+        token = { ...token, ...user };
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user = {
+        ...session.user,
+        id: token.sub ?? "",
+      };
+
+      return session;
+    }
+
   },
   trustHost: true
 });
