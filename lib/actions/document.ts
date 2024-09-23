@@ -1,42 +1,46 @@
 "use server"
+import { Status } from "@prisma/client";
 import prisma from "./../prisma";
+import { revalidatePath } from "next/cache";
 
-export async function createDocumento(id: string, nome: string, url: string, escolaId: string, usuarioId: string, alunoId: string, codigo: number, ano_final: number) {
+export async function createDocumento(usuarioId: string) {
     return await prisma.documento.create({
         data: {
-            id,
-            nome,
-            url,
-            codigo,
-            ano_final,
-            escola: { connect: { id: escolaId } },
             usuario: { connect: { id: usuarioId } },
-            aluno: { connect: { id: alunoId } }
         }
     });
 }
 
 export async function findDocumentoById(id: string) {
     return await prisma.documento.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+            aluno: true,
+            escola: true
+        },
     });
 }
 
-export async function findAllDocumentos(search: string, offset: number, limit: number = 6) {
-    const totalDocumentos = await prisma.documento.count({
-        where: {
-            nome: {
+export async function findAllDocumentos(search: string | null | undefined,
+    status: Status | null | undefined,
+    offset: number = 0,
+    limit: number = 6) {
+
+    const whereClause = {
+        nome: search
+            ? {
                 contains: search,
             }
-        },
+            : undefined,
+        status: status !== null && status !== undefined ? status : undefined,
+    };
+
+    const totalDocumentos = await prisma.documento.count({
+        where: whereClause
     });
 
     const documentos = await prisma.documento.findMany({
-        where: {
-            nome: {
-                contains: search,
-            }
-        },
+        where: whereClause,
         include: {
             aluno: true,
             escola: true
@@ -45,25 +49,37 @@ export async function findAllDocumentos(search: string, offset: number, limit: n
         take: limit
     });
 
-    const newOffset = Math.min(offset + limit, totalDocumentos);
-
     return {
         documentos,
-        newOffset,
-        totalDocumentos
+        newOffset: offset + limit,
+        totalDocumentos,
+        limit
     };
 }
 
-export async function updateDocumento(id: string, data: Partial<{ nome: string, url: string, escolaId?: string, usuarioId?: string, alunoId?: string }>) {
-    return await prisma.documento.update({
+export async function updateDocumento(id: string, formData: FormData) {
+    const ano_final = Number(formData.get("ano_final"));
+    const codigo = Number(formData.get("codigo"));
+    const url = formData.get("url") as string;
+    const status = formData.get("status") as Status;
+    const id_aluno = formData.get("id_aluno") as string;
+    const id_escola = formData.get("id_escola") as string;
+
+    const documento = await prisma.documento.update({
         where: { id },
         data: {
-            ...data,
-            escola: data.escolaId ? { connect: { id: data.escolaId } } : undefined,
-            usuario: data.usuarioId ? { connect: { id: data.usuarioId } } : undefined,
-            aluno: data.alunoId ? { connect: { id: data.alunoId } } : undefined
+            ano_final,
+            codigo,
+            status,
+            url,
+            id_escola,
+            id_aluno
         }
     });
+
+    revalidatePath(`/documentos/${id}`)
+
+    return documento
 }
 
 export async function deleteDocumento(id: string) {

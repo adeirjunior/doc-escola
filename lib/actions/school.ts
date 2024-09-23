@@ -27,6 +27,14 @@ export async function findEscolaById(id: string) {
     });
 }
 
+export async function findEscolas() {
+    return await prisma.escola.findMany({
+        where: {
+            status: 'ativo'
+        }
+    })
+}
+
 export async function findAllEscolas(
     search: string | null | undefined,
     status: Status | null | undefined,

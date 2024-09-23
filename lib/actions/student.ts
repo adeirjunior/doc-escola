@@ -17,10 +17,18 @@ export async function findAlunoById(id: string) {
     });
 }
 
-export async function findAllAlunos(search: string | null | undefined,
-    status: Status | null | undefined,
+export async function findAlunos() {
+    return await prisma.aluno.findMany({
+        where: {
+            status: 'ativo'
+        }
+    })
+}
+
+export async function findAllAlunos(search?: string | null | undefined,
+    status?: Status | null | undefined,
     offset: number = 0,
-    limit: number = 5) {
+    limit: number = 6) {
     const whereClause = {
         nome: search
             ? {
@@ -47,10 +55,9 @@ export async function findAllAlunos(search: string | null | undefined,
         take: limit
     });
 
-    const newOffset = Math.min(offset + limit, totalAlunos);
     return {
         alunos,
-        newOffset,
+        newOffset: offset + limit,
         limit,
         totalAlunos
     };

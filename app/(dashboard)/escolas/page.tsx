@@ -11,7 +11,7 @@ import Link from 'next/link';
 export default async function EscolasPage({
     searchParams
 }: {
-        searchParams: { q: string | undefined; offset: number | undefined, status: Status | undefined };
+    searchParams: { q: string | undefined; offset: number | undefined, status: Status | undefined };
 }) {
     const session = await auth();
     const search = searchParams.q ?? '';
@@ -82,7 +82,7 @@ export default async function EscolasPage({
             </TabsContent>
             <TabsContent value="ativo">
                 <EscolasTable
-                limit={limit}
+                    limit={limit}
                     escolas={escolas}
                     offset={newOffset ?? 0}
                     totalEscolas={totalEscolas}

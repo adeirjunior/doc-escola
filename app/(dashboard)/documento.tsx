@@ -11,6 +11,7 @@ import { FileText, MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Aluno, Documento as DocumentoType, Escola } from '@prisma/client';
 import { deleteDocumento } from '@/lib/actions/document';
+import Link from 'next/link';
 
 export function Documento({ documento }: { documento: DocumentoType & {aluno: Aluno | null, escola: Escola | null} }) {
   return (
@@ -39,7 +40,7 @@ export function Documento({ documento }: { documento: DocumentoType & {aluno: Al
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>Editar</DropdownMenuItem>
+            <DropdownMenuItem><Link href={`/documentos/${documento.id}`}>Editar</Link></DropdownMenuItem>
             <DropdownMenuItem>
               <form action={() => deleteDocumento(documento.id)}>
                 <button type="submit">Deletar</button>

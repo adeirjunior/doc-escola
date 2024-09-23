@@ -65,15 +65,13 @@ async function main() {
             await prisma.documento.upsert({
                 where: { id: nome },
                 update: {
-                    nome,
                     url: "http://192.168.3.32/doc-escola/old/3/73543.pdf",
                     escola: { connect: { id: escola.id } },
                     usuario: { connect: { id: usuario.id } },
                     aluno: { connect: { id: aluno.id } }
                 },
                 create: {
-                    id: nome, 
-                    nome,
+                    id: nome,
                     url: "http://192.168.3.32/doc-escola/old/3/73543.pdf",
                     escola: { connect: { id: escola.id } },
                     usuario: { connect: { id: usuario.id } },

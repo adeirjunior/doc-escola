@@ -33,7 +33,6 @@ model Aluno {
 model Documento {
   id        String  @id @default(cuid())
   url       String?  @db.VarChar(240)
-  nome      String? @db.VarChar(200)
   codigo    Int?
   ano_final Int?
 

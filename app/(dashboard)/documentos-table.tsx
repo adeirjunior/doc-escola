@@ -1,57 +1,45 @@
-'use client';
-
-import {
-  TableHead,
-  TableRow,
-  TableHeader,
-  TableBody,
-  Table
-} from '@/components/ui/table';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
-import { Documento } from './documento';
-import { useRouter } from 'next/navigation';
+"use client"
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Aluno, Documento as DocumentoType, Escola } from '@prisma/client';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableHead, TableRow, TableHeader } from '@/components/ui/table';
+import { Documento } from './documento';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Aluno, Escola, Documento as DocumentoType } from '@prisma/client';
 
 export function DocumentosTable({
   documentos,
   offset,
-  totalDocumentos
+  totalDocumentos,
+  limit
 }: {
-    documentos: (DocumentoType & { aluno: Aluno | null; escola: Escola | null })[];
+  documentos: (DocumentoType & { aluno: Aluno | null; escola: Escola | null })[];
   offset: number;
   totalDocumentos: number;
+  limit: number;
 }) {
   const router = useRouter();
-  const documentsPerPage = 5;
+  const searchParams = useSearchParams();
 
   function prevPage() {
-    if (offset > 0) {
-      router.push(`/?offset=${offset - documentsPerPage}`, { scroll: false });
-    }
+    const newOffset = Math.max(0, offset - limit * 2);
+
+    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+
+    router.push(`/${queryString}`)
   }
 
   function nextPage() {
-    if (offset + documentsPerPage < totalDocumentos) {
-      router.push(`/?offset=${offset + documentsPerPage}`, { scroll: false });
-    }
+    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+
+    router.push(`/${queryString}`, { scroll: false });
   }
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Documentos</CardTitle>
-        <CardDescription>
-          Visualize e gerencie todos os documentos.
-        </CardDescription>
+        <CardDescription>Visualize e gerencie todos os documentos.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -82,34 +70,35 @@ export function DocumentosTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.max(1, offset + 1)}-{Math.min(offset + documentsPerPage, totalDocumentos)}
+              {Math.min(offset - limit, totalDocumentos) + 1}-{offset}
             </strong>{' '}
             de <strong>{totalDocumentos}</strong> documentos
           </div>
           <div className="flex">
             <Button
-              onClick={prevPage}
+              formAction={prevPage}
               variant="ghost"
               size="sm"
-              type="button"
-              disabled={offset <= 0}
+              type="submit"
+              disabled={offset === limit}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Anterior
             </Button>
             <Button
-              onClick={nextPage}
+              formAction={nextPage}
               variant="ghost"
               size="sm"
-              type="button"
-              disabled={offset + documentsPerPage >= totalDocumentos}
+              type="submit"
+              disabled={offset + limit > totalDocumentos}
             >
-              Próximo
+              Próxima
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </form>
       </CardFooter>
+
     </Card>
   );
 }
