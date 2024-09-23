@@ -1,11 +1,11 @@
 "use server"
+import { Status } from "@prisma/client";
 import prisma from "./../prisma";
+import { revalidatePath } from "next/cache";
 
-export async function createAluno(id: string, nome: string, id_escola: string, usuarioId: string) {
+export async function createAluno(usuarioId: string) {
     return await prisma.aluno.create({
         data: {
-            id,
-            nome,
             usuario: { connect: { id: usuarioId } }
         }
     });
@@ -17,21 +17,25 @@ export async function findAlunoById(id: string) {
     });
 }
 
-export async function findAllAlunos(search: string, offset: number, limit: number = 10) {
-    const totalAlunos = await prisma.aluno.count({
-        where: {
-            nome: {
+export async function findAllAlunos(search: string | null | undefined,
+    status: Status | null | undefined,
+    offset: number = 0,
+    limit: number = 5) {
+    const whereClause = {
+        nome: search
+            ? {
                 contains: search,
             }
-        }
+            : undefined,
+        status: status !== null && status !== undefined ? status : undefined,
+    };
+
+    const totalAlunos = await prisma.aluno.count({
+        where: whereClause,
     });
 
     const alunos = await prisma.aluno.findMany({
-        where: {
-            nome: {
-                contains: search,
-            }
-        },
+        where: whereClause,
         include: {
             _count: {
                 select: {
@@ -47,18 +51,30 @@ export async function findAllAlunos(search: string, offset: number, limit: numbe
     return {
         alunos,
         newOffset,
+        limit,
         totalAlunos
     };
 }
 
-export async function updateAluno(id: string, data: Partial<{ nome: string, usuarioId?: string }>) {
-    return await prisma.aluno.update({
+export async function updateAluno(id: string, formData: FormData) {
+    const nome = formData.get("nome") as string;
+    const nome_pai = formData.get("nome_pai") as string;
+    const nome_mae = formData.get("nome_mae") as string;
+    const status = formData.get("status") as Status;
+
+    const aluno = await prisma.aluno.update({
         where: { id },
         data: {
-            ...data,
-            usuario: data.usuarioId ? { connect: { id: data.usuarioId } } : undefined
+            nome,
+            nome_pai,
+            nome_mae,
+            status
         }
     });
+
+    revalidatePath(`/alunos/${id}`)
+
+    return aluno
 }
 
 export async function deleteAluno(id: string) {

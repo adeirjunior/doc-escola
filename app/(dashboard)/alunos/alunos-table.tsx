@@ -16,7 +16,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Aluno } from './aluno';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Aluno as AlunoType } from '@prisma/client';
@@ -24,23 +24,30 @@ import { Aluno as AlunoType } from '@prisma/client';
 export function AlunosTable({
   alunos,
   offset,
-  totalAlunos
+  totalAlunos,
+  limit
 }: {
     alunos: (AlunoType & {_count: {documentos: number}})[];
   offset: number;
   totalAlunos: number;
+    limit: number;
 }) {
   const router = useRouter();
-  const productsPerPage = 5;
+  const searchParams = useSearchParams();
 
   function prevPage() {
-    router.back();
+    const newOffset = Math.max(0, offset - limit * 2);
+
+    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+
+    router.push(`/alunos${queryString}`)
   }
 
   function nextPage() {
-    router.push(`/?offset=${offset}`, { scroll: false });
-  }
+    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
+    router.push(`/alunos${queryString}`, { scroll: false });
+  }
   return (
     <Card>
       <CardHeader>
@@ -80,9 +87,9 @@ export function AlunosTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset - productsPerPage, totalAlunos) + 1}-{offset}
+              {Math.min(offset - limit, totalAlunos) + 1}-{offset}
             </strong>{' '}
-            de <strong>{totalAlunos}</strong> documentos
+            de <strong>{totalAlunos}</strong> alunos
           </div>
           <div className="flex">
             <Button
@@ -90,7 +97,7 @@ export function AlunosTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset === productsPerPage}
+              disabled={offset === limit}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Anterior
@@ -100,9 +107,9 @@ export function AlunosTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset + productsPerPage > totalAlunos}
+              disabled={offset + limit > totalAlunos}
             >
-              Próximo
+              Próxima
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
