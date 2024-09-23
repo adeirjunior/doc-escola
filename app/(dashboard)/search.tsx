@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/icons';
 import { Search } from 'lucide-react';
@@ -9,14 +9,22 @@ import { Search } from 'lucide-react';
 export function SearchInput() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
+  const status = searchParams.get('status');
+  const offset = Number(searchParams.get('offset')) ?? 0;
+  const q = searchParams.get('q') || '';
 
   function searchAction(formData: FormData) {
-    const value = formData.get('q') as string;
-    const params = new URLSearchParams({ q: value });
+    const q = formData.get('q') as string;
+    const newOffset = Math.max(0, offset - 12);
+    
+    const queryString = `?offset=${newOffset}${q ? `&q=${q}` : ''}${searchParams.get('status') ? `&status=${status}` : ''}`;
+
     startTransition(() => {
-      router.replace(`/?${params.toString()}`);
+      router.replace(`${queryString}`);
     });
   }
+
 
   return (
     <form action={searchAction} className="relative ml-auto flex-1 md:grow-0">
@@ -25,6 +33,7 @@ export function SearchInput() {
         name="q"
         type="search"
         placeholder="Pesquisa..."
+        defaultValue={q}
         className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
       />
       {isPending && <Spinner />}

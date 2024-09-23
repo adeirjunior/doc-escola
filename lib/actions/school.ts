@@ -27,14 +27,20 @@ export async function findEscolaById(id: string) {
     });
 }
 
-export async function findAllEscolas(search: string | null | undefined, offset: number = 0, limit: number = 6) {
-    const whereClause = search
-        ? {
-            nome: {
+export async function findAllEscolas(
+    search: string | null | undefined,
+    status: Status | null | undefined,
+    offset: number = 0,
+    limit: number = 6
+) {
+    const whereClause = {
+        nome: search
+            ? {
                 contains: search,
-            },
-        }
-        : undefined;
+            }
+            : undefined,
+        status: status !== null && status !== undefined ? status : undefined,
+    };
 
     const totalEscolas = await prisma.escola.count({
         where: whereClause,
@@ -70,10 +76,9 @@ export async function findAllEscolas(search: string | null | undefined, offset: 
         escolas: escolasComContagem,
         newOffset: offset + limit,
         totalEscolas,
-        limit
+        limit,
     };
 }
-
 
 export async function updateEscola(id: string, formData: FormData) {
     const nome = formData.get("nome") as string;

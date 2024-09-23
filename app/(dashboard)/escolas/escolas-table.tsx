@@ -24,13 +24,13 @@ export function EscolasTable({
   function prevPage() {
     const newOffset = Math.max(0, offset - limit * 2);
 
-    const queryString = `${newOffset <= 0 ? " " : `?offset=${newOffset}`}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`;
+    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
-    router.push(`/escolas${queryString}`);
+    router.push(`/escolas${queryString}`)
   }
 
   function nextPage() {
-    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}`;
+    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
     router.push(`/escolas${queryString}`, { scroll: false });
   }
