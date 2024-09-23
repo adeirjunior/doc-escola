@@ -87,7 +87,7 @@ function PDFDownloader({ url }: { url: string }) {
             const fileUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = fileUrl;
-            link.download = 'documento.pdf'; // Nome do arquivo para download
+            link.download = 'documento.pdf';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
