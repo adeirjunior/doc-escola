@@ -71,7 +71,7 @@ export async function updateDocumento(id: string, formData: FormData) {
 
     let url = formData.get("url") as string;
 
-    const file = formData.get("file") as File | null;
+    const file = formData.get("file") as File | null | undefined;
     if (file && file instanceof Blob) {
         const fileBuffer = Buffer.from(await file.arrayBuffer());
         const fileName = `${Date.now()}-${file.name}`;
