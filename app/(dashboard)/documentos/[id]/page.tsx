@@ -19,7 +19,10 @@ export default async function page({ params }: { params: { id: string } }) {
         notFound()
     }
 
-    return <>
+    return <form id="updateForm" action={async (formData) => {
+        "use server"
+        await updateDocumento(params.id, formData)
+    }}>
         <Card>
             <CardHeader>
                 <CardTitle>Documento de {documento?.aluno?.nome ?? "Documento"}</CardTitle>
@@ -27,22 +30,17 @@ export default async function page({ params }: { params: { id: string } }) {
                     Informações sobre este documento
                 </CardDescription>
             </CardHeader>
-            <CardContent>
-                <form id="updateForm" action={async (formData) => {
-                    "use server"
-                    await updateDocumento(params.id, formData)
-                }} className="flex flex-col gap-2 items-center w-full justify-between">
-                    <Input name="codigo" type="number" placeholder="Código" defaultValue={documento?.codigo ?? ""} />
-                    <Input name="ano_final" type="number" placeholder="Ano final" defaultValue={documento?.ano_final ?? ""} />
-                    <AlunosPopover alunos={alunos} name="id_aluno" defaultValue={documento?.id_aluno} />
-                    <EscolasPopover name="id_escola" escolas={escolas} defaultValue={documento.id_escola} />
-                    <ComboboxPopover name="status" defaultValue={documento.status} />
-                </form>
+            <CardContent className="flex flex-col gap-2 items-center w-full justify-between">
+                <Input name="codigo" type="number" placeholder="Código" defaultValue={documento?.codigo ?? ""} />
+                <Input name="ano_final" type="number" placeholder="Ano final" defaultValue={documento?.ano_final ?? ""} />
+                <AlunosPopover alunos={alunos} name="id_aluno" defaultValue={documento?.id_aluno} />
+                <EscolasPopover name="id_escola" escolas={escolas} defaultValue={documento.id_escola} />
+                <ComboboxPopover name="status" defaultValue={documento.status} />
             </CardContent>
             <CardFooter className="justify-end">
                 <Button form="updateForm">Salvar</Button>
             </CardFooter>
         </Card>
-        <DocumentPDFViewer url={documento.url!} />
-    </>
+        <DocumentPDFViewer name="file" url={documento.url!} />
+    </form>
 }
