@@ -35,7 +35,7 @@ export async function User() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Configurações</DropdownMenuItem>
+        <DropdownMenuItem><Link href="/conta">Configurações</Link></DropdownMenuItem>
         <DropdownMenuItem>Suporte</DropdownMenuItem>
         <DropdownMenuSeparator />
         {user ? (

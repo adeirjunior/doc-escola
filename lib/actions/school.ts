@@ -107,6 +107,19 @@ export async function updateEscola(id: string, formData: FormData) {
     return escola
 }
 
+export async function arquiveEscola(id: string) {
+    const escola = await prisma.escola.update({
+        where: { id },
+        data: {
+            status: 'arquivado'
+        }
+    });
+
+    revalidatePath("/escolas")
+
+    return escola
+}
+
 export async function deleteEscola(id: string) {
     const escola = await prisma.escola.delete({
         where: { id }

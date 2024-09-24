@@ -101,6 +101,19 @@ export async function updateDocumento(id: string, formData: FormData) {
     return documento;
 }
 
+export async function arquiveDocumento(id: string) {
+    const documento = await prisma.documento.update({
+        where: { id },
+        data: {
+            status: 'arquivado'
+        }
+    });
+
+    revalidatePath("/")
+
+    return documento
+}
+
 export async function deleteDocumento(id: string) {
     return await prisma.documento.delete({
         where: { id }

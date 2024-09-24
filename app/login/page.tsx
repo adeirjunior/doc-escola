@@ -11,7 +11,7 @@ import { signIn, auth } from '@/lib/auth';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-export default async function LoginPage() {
+export default async function LoginPage({searchParams}: {searchParams: { error: string}}) {
   const session = await auth()
 
   if(session) {
@@ -45,6 +45,7 @@ export default async function LoginPage() {
           >
             <Input name="username" type="text" placeholder='Seu login/nome de usuário' />
             <Input name="senha" type="password" placeholder='Senha' />
+            {searchParams.error && <p className='text-red-500 w-full'>Credenciais incorretas</p>}
             <Button>Entrar</Button>
           </form>
         </CardFooter>

@@ -84,6 +84,19 @@ export async function updateAluno(id: string, formData: FormData) {
     return aluno
 }
 
+export async function arquiveAluno(id: string) {
+    const aluno = await prisma.aluno.update({
+        where: { id },
+        data: {
+            status: 'arquivado'
+        }
+    });
+
+    revalidatePath("/alunos")
+
+    return aluno
+}
+
 export async function deleteAluno(id: string) {
     return await prisma.aluno.delete({
         where: { id }

@@ -10,7 +10,7 @@ import {
 import { MoreHorizontal, Users2 } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Aluno as AlunoType } from '@prisma/client';
-import { deleteAluno } from '@/lib/actions/student';
+import { arquiveAluno } from '@/lib/actions/student';
 import Link from 'next/link';
 
 export function Aluno({ aluno }: { aluno: AlunoType & { _count: { documentos: number } } }) {
@@ -44,8 +44,8 @@ export function Aluno({ aluno }: { aluno: AlunoType & { _count: { documentos: nu
               <Link href={`/alunos/${aluno.id}`}>Editar</Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <form action={() => deleteAluno(aluno.id)}>
-                <button type="submit">Deletar</button>
+              <form action={() => arquiveAluno(aluno.id)}>
+                <button type="submit">Arquivar</button>
               </form>
             </DropdownMenuItem>
           </DropdownMenuContent>

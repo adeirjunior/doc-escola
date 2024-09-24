@@ -10,7 +10,7 @@ import {
 import { MoreHorizontal, School } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Escola as EscolaType } from '@prisma/client';
-import { deleteEscola } from '@/lib/actions/school';
+import { arquiveEscola } from '@/lib/actions/school';
 import Link from 'next/link';
 
 export function Escola({ escola }: { escola: EscolaType & {totalAlunos: number} }) {
@@ -43,8 +43,8 @@ export function Escola({ escola }: { escola: EscolaType & {totalAlunos: number} 
               </Link>
               </DropdownMenuItem>
             <DropdownMenuItem>
-              <form action={() => deleteEscola(escola.id)}>
-                <button type="submit">Deletar</button>
+              <form action={() => arquiveEscola(escola.id)}>
+                <button type="submit">Arquivar</button>
               </form>
             </DropdownMenuItem>
           </DropdownMenuContent>

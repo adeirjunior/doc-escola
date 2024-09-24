@@ -59,22 +59,22 @@ function DesktopNav() {
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
       <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
         <Link
-          href="/"
+          href="/?status=ativo"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
           <VercelLogo className="h-3 w-3 transition-all group-hover:scale-110" />
           <span className="sr-only">Doc Escola</span>
         </Link>
 
-        <NavItem href="/" label="Documentos">
+        <NavItem href="/?status=ativo" label="Documentos">
           <FileText className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/alunos" label="Alunos">
+        <NavItem href="/alunos?status=ativo" label="Alunos">
           <Users2 className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/escolas" label="Escolas">
+        <NavItem href="/escolas?status=ativo" label="Escolas">
           <School className="h-5 w-5" />
         </NavItem>
       </nav>
@@ -115,21 +115,21 @@ function MobileNav() {
             <span className="sr-only">Doc Escola</span>
           </Link>
           <Link
-            href="/"
+            href="/?status=ativo"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <FileText className="h-5 w-5" />
             Documentos
           </Link>
           <Link
-            href="/alunos"
+            href="/alunos?status=ativo"
             className="flex items-center gap-4 px-2.5 text-foreground"
           >
             <Users2 className="h-5 w-5" />
             Alunos
           </Link>
           <Link
-            href="/escolas"
+            href="/escolas?status=ativo"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <School className="h-5 w-5" />
@@ -154,13 +154,13 @@ function DashboardBreadcrumb() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/">Dashboard</Link>
+            <Link href="/?status=ativo">Dashboard</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/">Documentos</Link>
+            <Link href="/?status=ativo">Documentos</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
