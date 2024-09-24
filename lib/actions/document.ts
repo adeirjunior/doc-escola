@@ -31,11 +31,12 @@ export async function findAllDocumentos(search: string | null | undefined,
     limit: number = 6) {
 
     const whereClause = {
-        nome: search
+        aluno: search
             ? {
-                contains: search,
-            }
-            : undefined,
+                nome: {
+                    contains: search
+                }
+            } : undefined,
         status: status !== null && status !== undefined ? status : undefined,
     };
 
