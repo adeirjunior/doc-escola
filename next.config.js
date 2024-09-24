@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    // You may not need this, it's just to support moduleResolution: 'node16'
+    serverActions: {
+      bodySizeLimit: '20mb',
+    },
     extensionAlias: {
       '.js': ['.tsx', '.ts', '.jsx', '.js'],
     },

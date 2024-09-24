@@ -70,16 +70,18 @@ export async function updateDocumento(id: string, formData: FormData) {
     await fs.mkdir(uploadDir, { recursive: true });
 
     let url = formData.get("url") as string;
-
     const file = formData.get("file") as File | null | undefined;
-    if (file && file instanceof Blob) {
+
+    // Verifica se o arquivo existe e se o nome do arquivo não é vazio ou "undefined"
+    if (file && file instanceof Blob && file.name && file.name !== "undefined") {
         const fileBuffer = Buffer.from(await file.arrayBuffer());
-        const fileName = `${Date.now()}-${file.name}`;
-        const filePath = path.join(uploadDir, fileName);
+
+        const sanitizedFileName = `${Date.now()}_${file.name.replace(/[^\w.-]/g, "_")}`;
+        const filePath = path.join(uploadDir, sanitizedFileName);
 
         await fs.writeFile(filePath, fileBuffer);
 
-        url = `/old/${fileName}`;
+        url = `/old/${sanitizedFileName}`;
     }
 
     const documento = await prisma.documento.update({
@@ -94,7 +96,6 @@ export async function updateDocumento(id: string, formData: FormData) {
         }
     });
 
-    // Revalida o caminho do documento
     revalidatePath(`/documentos/${id}`);
 
     return documento;
