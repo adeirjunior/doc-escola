@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { File, PlusCircle } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AlunosTable } from './alunos-table';
 import { createAluno, findAllAlunos } from '@/lib/actions/student';
@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Status } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default async function AlunosPage({
   searchParams
@@ -52,12 +53,6 @@ export default async function AlunosPage({
           </Link>
         </TabsList>
         <div className="ml-auto flex items-center gap-2">
-          <Button size="sm" variant="outline" className="h-8 gap-1">
-            <File className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Exportar
-            </span>
-          </Button>
           <form action={async () => {
             "use server"
             const aluno = await createAluno(session.user?.id as string);
@@ -73,36 +68,44 @@ export default async function AlunosPage({
         </div>
       </div>
       <TabsContent value="tudo">
-        <AlunosTable
-          alunos={alunos}
-          limit={limit}
-          offset={newOffset ?? 0}
-          totalAlunos={totalAlunos}
-        />
+          <Suspense fallback={<p>Carregando...</p>}>
+            <AlunosTable
+              alunos={alunos}
+              limit={limit}
+              offset={newOffset ?? 0}
+              totalAlunos={totalAlunos}
+            />
+          </Suspense>
       </TabsContent>
       <TabsContent value="ativo">
-        <AlunosTable
-          alunos={alunos}
-          limit={limit}
-          offset={newOffset ?? 0}
-          totalAlunos={totalAlunos}
-        />
+          <Suspense fallback={<p>Carregando...</p>}>
+            <AlunosTable
+              alunos={alunos}
+              limit={limit}
+              offset={newOffset ?? 0}
+              totalAlunos={totalAlunos}
+            />
+          </Suspense>
       </TabsContent>
       <TabsContent value="rascunho">
-        <AlunosTable
-          alunos={alunos}
-          limit={limit}
-          offset={newOffset ?? 0}
-          totalAlunos={totalAlunos}
-        />
+          <Suspense fallback={<p>Carregando...</p>}>
+            <AlunosTable
+              alunos={alunos}
+              limit={limit}
+              offset={newOffset ?? 0}
+              totalAlunos={totalAlunos}
+            />
+          </Suspense>
       </TabsContent>
       <TabsContent value="arquivado">
-        <AlunosTable
-          alunos={alunos}
-          limit={limit}
-          offset={newOffset ?? 0}
-          totalAlunos={totalAlunos}
-        />
+          <Suspense fallback={<p>Carregando...</p>}>
+            <AlunosTable
+              alunos={alunos}
+              limit={limit}
+              offset={newOffset ?? 0}
+              totalAlunos={totalAlunos}
+            />
+          </Suspense>
       </TabsContent>
     </Tabs>
   );

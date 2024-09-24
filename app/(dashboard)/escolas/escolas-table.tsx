@@ -22,15 +22,17 @@ export function EscolasTable({
   const searchParams = useSearchParams();
 
   function prevPage() {
-    const newOffset = Math.max(0, offset - limit * 2);
+    const newOffset = Math.max(0, offset - limit);
 
     const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
-    router.push(`/escolas${queryString}`)
+    router.push(`/escolas${queryString}`);
   }
 
   function nextPage() {
-    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+    const newOffset = offset + limit;
+
+    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
     router.push(`/escolas${queryString}`, { scroll: false });
   }
@@ -65,39 +67,36 @@ export function EscolasTable({
         </Table>
       </CardContent>
       <CardFooter>
-        <form className="flex items-center w-full justify-between">
+        <div className="flex items-center w-full justify-between">
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset - limit, totalEscolas) + 1}-{offset}
+              {Math.min(offset + 1, totalEscolas)}-{Math.min(offset + limit, totalEscolas)}
             </strong>{' '}
             de <strong>{totalEscolas}</strong> escolas
           </div>
           <div className="flex">
             <Button
-              formAction={prevPage}
+              onClick={prevPage}
               variant="ghost"
               size="sm"
-              type="submit"
-              disabled={offset === limit}
+              disabled={offset === 0}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Anterior
             </Button>
             <Button
-              formAction={nextPage}
+              onClick={nextPage}
               variant="ghost"
               size="sm"
-              type="submit"
-              disabled={offset + limit > totalEscolas}
+              disabled={offset + limit >= totalEscolas}
             >
               Próxima
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
-        </form>
+        </div>
       </CardFooter>
-
     </Card>
   );
 }

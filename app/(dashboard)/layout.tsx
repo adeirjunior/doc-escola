@@ -7,15 +7,6 @@ import {
   Settings,
   Users2
 } from 'lucide-react';
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -28,6 +19,8 @@ import { VercelLogo } from '@/components/icons';
 import Providers from './providers';
 import { NavItem } from './nav-item';
 import { SearchInput } from './search';
+import { Suspense } from 'react';
+import DashboardBreadcrumb from './dashboard-breadcrumb';
 
 export default function DashboardLayout({
   children
@@ -42,7 +35,10 @@ export default function DashboardLayout({
           <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <MobileNav />
             <DashboardBreadcrumb />
-            <SearchInput />
+            <Suspense fallback={<p></p>}>
+              <SearchInput />
+            </Suspense>
+            
             <User />
           </header>
           <main className="grid flex-1 items-start gap-2 p-4 sm:px-6 sm:py-0 md:gap-4 bg-muted/40">
@@ -82,7 +78,7 @@ function DesktopNav() {
         <Tooltip>
           <TooltipTrigger asChild>
             <Link
-              href="#"
+              href="/configuracoes"
               className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
             >
               <Settings className="h-5 w-5" />
@@ -136,7 +132,7 @@ function MobileNav() {
             Escolas
           </Link>
           <Link
-            href="#"
+            href="/configuracoes"
             className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
           >
             <Settings className="h-5 w-5" />
@@ -145,29 +141,5 @@ function MobileNav() {
         </nav>
       </SheetContent>
     </Sheet>
-  );
-}
-
-function DashboardBreadcrumb() {
-  return (
-    <Breadcrumb className="hidden md:flex">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/?status=ativo">Dashboard</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/?status=ativo">Documentos</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Todos os Documentos</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
   );
 }

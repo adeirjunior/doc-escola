@@ -4,6 +4,7 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '20mb',
     },
+    ppr: 'incremental',
     extensionAlias: {
       '.js': ['.tsx', '.ts', '.jsx', '.js'],
     },
