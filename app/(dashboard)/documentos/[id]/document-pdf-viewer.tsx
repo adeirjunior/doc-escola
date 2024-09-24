@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useMemo } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
@@ -13,13 +13,6 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
     'pdfjs-dist/build/pdf.worker.min.mjs',
     import.meta.url,
 ).toString();
-
-const options = {
-    cMapUrl: '/cmaps/',
-    standardFontDataUrl: '/standard_fonts/',
-};
-
-const maxWidth = 800;
 
 type PDFFile = string | File | null;
 
@@ -41,6 +34,14 @@ export default function Sample({ url, name }: { url: string; name: string }) {
     const [file, setFile] = useState<PDFFile>(null);
     const [numPages, setNumPages] = useState<number>();
 
+    const options = useMemo(() => {
+        return {
+            cMapUrl: '/bcmaps/',
+            standardFontDataUrl: '/standard_fonts/',
+            cMapPacked: true,
+        };
+    }, []);
+
     useEffect(() => {
         async function convertUrlToFile() {
             const fileFromUrl = await urlToFile(url, 'document.pdf', 'application/pdf');
@@ -57,9 +58,9 @@ export default function Sample({ url, name }: { url: string; name: string }) {
             setFile(nextFile);
         }
     }
- 
-    function onDocumentLoadSuccess({ numPages: nextNumPages }: PDFDocumentProxy): void {
-        setNumPages(nextNumPages);
+
+    function onDocumentLoadSuccess({ numPages }: PDFDocumentProxy): void {
+        setNumPages(numPages); // <== here is the issue #1 - we save page number of file, but in case it's changed, we know about new number only after it's loaded, before doc is loaded, this value is wrong
     }
 
     return (
@@ -76,9 +77,13 @@ export default function Sample({ url, name }: { url: string; name: string }) {
                 <div className="Example__container__document">
                     <Suspense fallback={<p>Carregando...</p>}>
                         <Document file={file} onLoadSuccess={onDocumentLoadSuccess} options={options}>
-                            {Array.from(new Array(numPages), (_el, index) => (
-                                <Page key={`page_${index + 1}`} pageNumber={index + 1} width={maxWidth} />
-                            ))}
+                            {Array.from(new Array(numPages), (_, index) => (
+                                <Page
+                                    key={index}
+                                    pageNumber={index + 1}
+                                />
+                            ),
+                            )}
                         </Document>
                     </Suspense>
                 </div>

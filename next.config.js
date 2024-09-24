@@ -18,7 +18,16 @@ const nextConfig = {
         canvas: './empty-module.ts',
       },
     },
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: '/documentos',
+        destination: '/',
+        permanent: true,
+      },
+    ]
+  },
 };
 
 module.exports = nextConfig;

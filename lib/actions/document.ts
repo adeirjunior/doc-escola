@@ -4,6 +4,8 @@ import prisma from "./../prisma";
 import { promises as fs } from 'fs';
 import path from 'path';
 import { revalidatePath } from "next/cache";
+import { documentoSchema } from "../zod";
+import { ZodError } from "zod";
 
 export async function createDocumento(usuarioId: string) {
     return await prisma.documento.create({
@@ -65,6 +67,18 @@ export async function updateDocumento(id: string, formData: FormData) {
     const status = formData.get("status") as Status;
     const id_aluno = formData.get("id_aluno") as string;
     const id_escola = formData.get("id_escola") as string;
+
+    try {
+        const validDocumento = await documentoSchema.parseAsync({ ano_final, codigo, status, id_aluno, id_escola })
+        console.log("Validação bem-sucedida!", validDocumento);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.log("Erros de validação:", error.errors);
+            throw new Error(error.message)
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+    }
 
     const uploadDir = path.join(process.cwd(), 'public', 'old');
     await fs.mkdir(uploadDir, { recursive: true });

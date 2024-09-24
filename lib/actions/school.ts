@@ -2,6 +2,8 @@
 import { revalidatePath } from "next/cache";
 import prisma from "./../prisma";
 import { Status } from "@prisma/client";
+import { escolaSchema } from "../zod";
+import { ZodError } from "zod";
 
 export async function createEscola(usuarioId: string) {
     if (!usuarioId) {
@@ -22,9 +24,47 @@ export async function findEscolaByNome(nome: string) {
 }
 
 export async function findEscolaById(id: string) {
-    return await prisma.escola.findUnique({
-        where: { id }
+    // Encontrar a escola pelo id
+    const escola = await prisma.escola.findUnique({
+        where: {
+            id: id,
+        },
     });
+
+    // Caso a escola não seja encontrada, retorna null ou um erro
+    if (!escola) {
+        return null; // ou throw new Error("Escola não encontrada");
+    }
+
+    // Buscar os documentos relacionados à escola para obter os alunos
+    const documentos = await prisma.documento.findMany({
+        where: {
+            id_escola: escola.id,
+        },
+        select: {
+            id_aluno: true,
+        },
+    });
+
+    // Extrair os IDs dos alunos únicos, filtrando os nulos
+    const alunoIds = documentos
+        .map((doc) => doc.id_aluno)
+        .filter((id): id is string => id !== null); // Filtra nulos
+
+    // Buscar os detalhes dos alunos usando os IDs
+    const alunos = await prisma.aluno.findMany({
+        where: {
+            id: {
+                in: alunoIds,
+            },
+        },
+    });
+
+    // Retornar a escola com a lista de alunos
+    return {
+        ...escola,
+        alunos,
+    };
 }
 
 export async function findEscolas() {
@@ -92,6 +132,18 @@ export async function updateEscola(id: string, formData: FormData) {
     const nome = formData.get("nome") as string;
     const endereco = formData.get("endereco") as string;
     const status = formData.get("status") as Status;
+
+    try {
+        const validEscola = await escolaSchema.parseAsync({ nome, endereco, status })
+        console.log("Validação bem-sucedida!", validEscola);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.log("Erros de validação:", error.errors);
+            throw new Error(error.message)
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+    }
 
     const escola = await prisma.escola.update({
         where: { id },

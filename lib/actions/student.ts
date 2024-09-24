@@ -2,6 +2,8 @@
 import { Status } from "@prisma/client";
 import prisma from "./../prisma";
 import { revalidatePath } from "next/cache";
+import { alunoSchema } from "../zod";
+import { ZodError } from "zod";
 
 export async function createAluno(usuarioId: string) {
     return await prisma.aluno.create({
@@ -68,6 +70,18 @@ export async function updateAluno(id: string, formData: FormData) {
     const nome_pai = formData.get("nome_pai") as string;
     const nome_mae = formData.get("nome_mae") as string;
     const status = formData.get("status") as Status;
+
+    try {
+        const validAluno = await alunoSchema.parseAsync({ nome, nome_pai, nome_mae, status })
+        console.log("Validação bem-sucedida!", validAluno);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.log("Erros de validação:", error.errors);
+            throw new Error(error.message)
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+    }
 
     const aluno = await prisma.aluno.update({
         where: { id },
