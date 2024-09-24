@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { findEscolaById, updateEscola } from "@/lib/actions/school";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string } }) {
     const escola = await findEscolaById(params.id);
 
-    if(!escola) {
+    if (!escola) {
         notFound()
     }
 
@@ -39,8 +40,12 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <CardTitle>Alunos Registrados</CardTitle>
             </CardHeader>
             <CardContent>
-                {escola.alunos.map(aluno => (<Card key={aluno.id}>{aluno.nome}</Card>))}
+                {escola.alunos.map(aluno => (
+                    <Card className="p-4 flex justify-between items-center" key={aluno.id}>
+                        <p className="font-semibold">{aluno.nome}</p>
+                        <Link className="text-blue-500" href={`/alunos/${aluno.id}`}>Ver</Link>
+                    </Card>))}
             </CardContent>
         </Card>
-    </> 
+    </>
 }
