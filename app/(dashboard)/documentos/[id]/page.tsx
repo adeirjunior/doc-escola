@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { findDocumentoById, updateDocumento } from "@/lib/actions/document";
+import { findAllDocumentos, findDocumentoById, updateDocumento } from "@/lib/actions/document";
 import { notFound } from "next/navigation";
 import { AlunosPopover } from "./alunos-popover";
 import { findAlunos } from "@/lib/actions/student";
@@ -10,6 +10,14 @@ import { EscolasPopover } from "./escolas-popover";
 import { findEscolas } from "@/lib/actions/school";
 import DocumentPDFViewer from "./document-pdf-viewer";
 import NewDocumentButton from "./new-document";
+
+export async function generateStaticParams() {
+    const { documentos } = await findAllDocumentos()
+
+    return documentos.map((documento) => ({
+        id: documento.id,
+    }))
+}
 
 export default async function page({ params }: { params: { id: string } }) {
     const documento = await findDocumentoById(params.id);

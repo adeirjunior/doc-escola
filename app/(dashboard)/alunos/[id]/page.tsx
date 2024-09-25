@@ -2,8 +2,16 @@ import { ComboboxPopover } from "@/components/status-popover";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { findAlunoById, updateAluno } from "@/lib/actions/student";
+import { findAllAlunos, findAlunoById, updateAluno } from "@/lib/actions/student";
 import { notFound } from "next/navigation";
+
+export async function generateStaticParams() {
+    const {alunos} = await findAllAlunos()
+
+    return alunos.map((aluno) => ({
+        id: aluno.id,
+    }))
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
     const aluno = await findAlunoById(params.id);

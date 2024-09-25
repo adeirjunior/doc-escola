@@ -2,9 +2,17 @@ import { ComboboxPopover } from "@/components/status-popover";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { findEscolaById, updateEscola } from "@/lib/actions/school";
+import { findAllEscolas, findEscolaById, updateEscola } from "@/lib/actions/school";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
+export async function generateStaticParams() {
+    const { escolas } = await findAllEscolas()
+
+    return escolas.map((escola) => ({
+        id: escola.id,
+    }))
+}
 
 export default async function Page({ params }: { params: { id: string } }) {
     const escola = await findEscolaById(params.id);

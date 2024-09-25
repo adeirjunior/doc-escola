@@ -25,8 +25,8 @@ export async function findDocumentoById(id: string) {
     });
 }
 
-export async function findAllDocumentos(search: string | null | undefined,
-    status: Status | null | undefined,
+export async function findAllDocumentos(search?: string | null | undefined,
+    status?: Status | null | undefined,
     offset: number = 0,
     limit: number = 6) {
 

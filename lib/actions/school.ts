@@ -93,8 +93,8 @@ export async function findEscolas() {
 }
 
 export async function findAllEscolas(
-    search: string | null | undefined,
-    status: Status | null | undefined,
+    search?: string | null | undefined,
+    status?: Status | null | undefined,
     offset: number = 0,
     limit: number = 6
 ) {
