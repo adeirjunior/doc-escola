@@ -5,16 +5,33 @@ import { Status } from "@prisma/client";
 import { escolaSchema } from "../zod";
 import { ZodError } from "zod";
 
-export async function createEscola(usuarioId: string) {
+export async function createEscola(usuarioId: string, endereco?: string, nome?: string, status?: Status ) {
     if (!usuarioId) {
         throw new Error('User ID is required to create a school');
     }
 
-    return await prisma.escola.create({
+    try {
+        const validEscola = await escolaSchema.parseAsync({ nome, endereco, status })
+        console.log("Validação bem-sucedida!", validEscola);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.log("Erros de validação:", error.errors);
+            throw new Error(error.message)
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+    }
+
+    const escola = await prisma.escola.create({
         data: {
-            usuario: { connect: { id: usuarioId } }
+            usuario: { connect: { id: usuarioId } },
+            endereco: endereco ? endereco.toUpperCase() : undefined,
+            nome: nome ? nome.toUpperCase() : undefined,
+            status
         }
     });
+
+    return escola
 }
 
 export async function findEscolaByNome(nome: string) {
@@ -129,8 +146,8 @@ export async function findAllEscolas(
 }
 
 export async function updateEscola(id: string, formData: FormData) {
-    const nome = formData.get("nome") as string;
-    const endereco = formData.get("endereco") as string;
+    const nome = String(formData.get("nome")).toUpperCase();
+    const endereco = String(formData.get("endereco")).toUpperCase();
     const status = formData.get("status") as Status;
 
     try {

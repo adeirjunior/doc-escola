@@ -106,8 +106,8 @@ export async function updateDocumento(id: string, formData: FormData) {
             codigo,
             status,
             url,
-            id_escola,
-            id_aluno
+            id_escola: id_escola || undefined,
+            id_aluno: id_aluno || undefined,
         }
     });
 

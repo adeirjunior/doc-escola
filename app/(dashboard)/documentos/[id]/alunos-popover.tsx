@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
     Command,
     CommandEmpty,
@@ -11,21 +10,59 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import { Aluno } from "@prisma/client"
-import { Users2 } from "lucide-react"
-import Link from "next/link"
+} from "@/components/ui/popover";
+import { Aluno } from "@prisma/client";
+import { Users2 } from "lucide-react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { createAluno } from "@/lib/actions/student"; // Importa a função para criar aluno
+import { useSession } from "next-auth/react";
 
-export function AlunosPopover({ alunos, defaultValue, name }: {name: string, alunos: Aluno[], defaultValue: string | null }) {
+export function AlunosPopover({ alunos, defaultValue, name }: { name: string, alunos: Aluno[], defaultValue: string | null }) {
     const [open, setOpen] = React.useState(false);
     const [selectedAlunos, setSelectedAlunos] = React.useState<Aluno | null>(
         alunos.find((aluno) => aluno.id === defaultValue) || null
     );
+    const [nomeAluno, setNomeAluno] = React.useState("");
+    const [nomePai, setNomePai] = React.useState("");
+    const [nomeMae, setNomeMae] = React.useState("");
+    const [loading, start] = React.useTransition();
+    const { data: session } = useSession();
+
+    const handleCreateAluno = () => {
+        try {
+            start(async () => {
+                if (!session?.user?.id) {
+                    throw new Error("Erro ao criar aluno");
+                }
+                const aluno = await createAluno(session.user.id, nomeAluno, nomePai, nomeMae, 'ativo');
+
+                if (aluno) {
+                    setSelectedAlunos(aluno);
+                    setOpen(false);
+                } else {
+                    throw new Error("Erro ao criar aluno");
+                }
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div className="flex w-full items-center space-x-4">
@@ -39,7 +76,6 @@ export function AlunosPopover({ alunos, defaultValue, name }: {name: string, alu
                     >
                         {selectedAlunos ? (
                             <>
-                                <Users2 className='text-muted-foreground mx-auto' />
                                 {selectedAlunos.nome}
                             </>
                         ) : (
@@ -51,7 +87,71 @@ export function AlunosPopover({ alunos, defaultValue, name }: {name: string, alu
                     <Command>
                         <CommandInput placeholder="Pesquisar aluno..." />
                         <CommandList>
-                            <CommandEmpty>Sem alunos encontrados.{" "}<Link className="text-blue-500" href="/alunos">Adicione um aluno.</Link></CommandEmpty>
+                            <CommandEmpty>
+                                Sem alunos encontrados.{" "}
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline">Criar aluno</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-[425px]">
+                                        <DialogHeader>
+                                            <DialogTitle>Aluno Novo</DialogTitle>
+                                            <DialogDescription>
+                                                Registre um novo aluno aqui caso não encontre no banco de dados.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Nome:
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    name="nome"
+                                                    className="col-span-3"
+                                                    value={nomeAluno}
+                                                    onChange={(e) => setNomeAluno(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Nome Pai:
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    name="nome_pai"
+                                                    className="col-span-3"
+                                                    value={nomePai}
+                                                    onChange={(e) => setNomePai(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Nome Mãe:
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    name="nome_mae"
+                                                    className="col-span-3"
+                                                    value={nomeMae}
+                                                    onChange={(e) => setNomeMae(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Status:
+                                                </Label>
+                                                <p className="col-span-3">Status será <Badge>Ativo</Badge> por padrão</p>
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button onClick={handleCreateAluno} disabled={loading}>
+                                                {loading ? "Salvando..." : "Salvar"}
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </CommandEmpty>
                             <CommandGroup>
                                 {alunos.map((aluno) => (
                                     <CommandItem

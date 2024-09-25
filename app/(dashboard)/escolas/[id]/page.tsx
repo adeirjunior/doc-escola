@@ -16,7 +16,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     return <>
         <Card>
             <CardHeader>
-                <CardTitle>{escola?.nome ?? "Escola"}</CardTitle>
+                <CardTitle>{escola?.nome ? `ESCOLA MUNICIPAL ${escola.nome}` : "ESCOLA MUNICIPAL"}</CardTitle>
                 <CardDescription>
                     Informações sobre esta escola
                 </CardDescription>

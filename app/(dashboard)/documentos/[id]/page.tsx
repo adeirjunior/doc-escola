@@ -9,6 +9,7 @@ import { ComboboxPopover } from "@/components/status-popover";
 import { EscolasPopover } from "./escolas-popover";
 import { findEscolas } from "@/lib/actions/school";
 import DocumentPDFViewer from "./document-pdf-viewer";
+import NewDocumentButton from "./new-document";
 
 export default async function page({ params }: { params: { id: string } }) {
     const documento = await findDocumentoById(params.id);
@@ -19,20 +20,27 @@ export default async function page({ params }: { params: { id: string } }) {
         notFound()
     }
 
+
     return <form id="updateForm" action={async (formData) => {
         "use server"
         await updateDocumento(params.id, formData)
     }}>
         <Card>
-            <CardHeader>
-                <CardTitle>Documento de {documento?.aluno?.nome ?? "Documento"}</CardTitle>
-                <CardDescription>
-                    Informações sobre este documento
-                </CardDescription>
+            <CardHeader className="flex flex-row justify-center">
+                <div>
+                    <CardTitle>{documento?.aluno?.nome ? `DOCUMENTO DE ${documento?.aluno?.nome}` : "DOCUMENTO"}</CardTitle>
+                    <CardDescription>
+                        Informações sobre este documento
+                    </CardDescription>
+                </div>
+
+                <div className="ml-auto flex items-center gap-2">
+                    <NewDocumentButton />
+                </div>
             </CardHeader>
             <CardContent className="flex flex-col gap-2 items-center w-full justify-between">
-                <Input name="codigo" type="number" placeholder="Código" defaultValue={documento?.codigo ?? ""} />
-                <Input name="ano_final" type="number" placeholder="Ano final" defaultValue={documento?.ano_final ?? ""} />
+                <Input name="codigo" type="number" max={99} placeholder="Código" defaultValue={documento?.codigo ?? ""} />
+                <Input name="ano_final" type="number" maxLength={4} max={3000} placeholder="Ano final" defaultValue={documento?.ano_final ?? ""} />
                 <AlunosPopover alunos={alunos} name="id_aluno" defaultValue={documento?.id_aluno} />
                 <EscolasPopover name="id_escola" escolas={escolas} defaultValue={documento.id_escola} />
                 <ComboboxPopover name="status" defaultValue={documento.status} />

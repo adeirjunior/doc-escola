@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
     Command,
     CommandEmpty,
@@ -11,21 +10,68 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import { Escola } from "@prisma/client"
-import { School } from "lucide-react"
-import Link from "next/link"
+} from "@/components/ui/popover";
+import { Escola } from "@prisma/client";
+import { School } from "lucide-react";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { createEscola } from "@/lib/actions/school";
+import { useSession } from "next-auth/react"
 
 export function EscolasPopover({ escolas, defaultValue, name }: { name: string, escolas: Escola[], defaultValue: string | null }) {
     const [open, setOpen] = React.useState(false);
     const [selectedEscolas, setSelectedEscolas] = React.useState<Escola | null>(
         escolas.find((escola) => escola.id === defaultValue) || null
     );
+    const [nomeEscola, setNomeEscola] = React.useState("");
+    const [enderecoEscola, setEnderecoEscola] = React.useState("");
+    const [loading, start] = React.useTransition();
+    const { data: session } = useSession();
+    
+    React.useEffect(() => {
+        const savedEscolaId = localStorage.getItem("selectedEscolaId");
+        if (savedEscolaId) {
+            const escola = escolas.find((escola) => escola.id === savedEscolaId) || null;
+            setSelectedEscolas(escola);
+        }
+    }, [escolas]);
+
+    const handleCreateEscola = () => {
+        try {
+            start(async () => {
+                if (!session?.user?.id) {
+                    throw new Error("Erro ao criar escola");
+                }
+                const escola = await createEscola(session.user.id, enderecoEscola, nomeEscola, 'ativo');
+
+                if (escola) {
+                    setSelectedEscolas(escola);
+                    localStorage.setItem("selectedEscolaId", escola.id);
+                    setOpen(false);
+                } else {
+                    throw new Error("Erro ao criar escola");
+                }
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div className="flex w-full items-center space-x-4">
@@ -39,7 +85,6 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
                     >
                         {selectedEscolas ? (
                             <>
-                                <School width={32} height={32} className='text-muted-foreground mx-auto' />
                                 {selectedEscolas.nome}
                             </>
                         ) : (
@@ -51,7 +96,59 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
                     <Command>
                         <CommandInput placeholder="Pesquisar escola..." />
                         <CommandList>
-                            <CommandEmpty>Sem escolas encontradas.{" "}<Link className="text-blue-500" href="/escolas">Adicione uma escola.</Link></CommandEmpty>
+                            <CommandEmpty>
+                                Sem escolas encontradas.{" "}
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline">Criar escola</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="sm:max-w-[425px]">
+                                        <DialogHeader>
+                                            <DialogTitle>Escola Municipal</DialogTitle>
+                                            <DialogDescription>
+                                                Registre uma nova escola aqui caso você não encontre no banco de dados.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-4">
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Nome:
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    name="nome"
+                                                    className="col-span-3"
+                                                    value={nomeEscola}
+                                                    onChange={(e) => setNomeEscola(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Endereço:
+                                                </Label>
+                                                <Input
+                                                    type="text"
+                                                    name="endereco"
+                                                    className="col-span-3"
+                                                    value={enderecoEscola}
+                                                    onChange={(e) => setEnderecoEscola(e.target.value)}
+                                                />
+                                            </div>
+                                            <div className="grid grid-cols-4 items-center gap-4">
+                                                <Label className="text-right">
+                                                    Status:
+                                                </Label>
+                                                <p className="col-span-3">Status será <Badge>Ativo</Badge> por padrão</p>
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button onClick={handleCreateEscola} disabled={loading}>
+                                                {loading ? "Salvando..." : "Salvar"}
+                                            </Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </CommandEmpty>
                             <CommandGroup>
                                 {escolas.map((escola) => (
                                     <CommandItem
@@ -60,6 +157,7 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
                                         onSelect={(value) => {
                                             const selected = escolas.find((s) => s.id === value) || null;
                                             setSelectedEscolas(selected);
+                                            localStorage.setItem("selectedEscolaId", value);
                                             setOpen(false);
                                         }}
                                     >
@@ -80,7 +178,6 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
                 </PopoverContent>
             </Popover>
 
-            {/* Input oculto para o status */}
             <input type="hidden" name={name} value={selectedEscolas?.id || ""} />
         </div>
     );

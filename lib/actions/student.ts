@@ -5,10 +5,26 @@ import { revalidatePath } from "next/cache";
 import { alunoSchema } from "../zod";
 import { ZodError } from "zod";
 
-export async function createAluno(usuarioId: string) {
+export async function createAluno(usuarioId: string, nome?: string, nome_pai?: string, nome_mae?: string, status?: Status) {
+    try {
+        const validAluno = await alunoSchema.parseAsync({ nome, nome_pai, nome_mae, status })
+        console.log("Validação bem-sucedida!", validAluno);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.log("Erros de validação:", error.errors);
+            throw new Error(error.message)
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+    }
+    
     return await prisma.aluno.create({
         data: {
-            usuario: { connect: { id: usuarioId } }
+            usuario: { connect: { id: usuarioId } },
+            nome: nome ? nome.toUpperCase() : undefined,
+            nome_pai: nome_pai ? nome_pai.toUpperCase() : undefined,
+            nome_mae: nome_mae ? nome_mae.toUpperCase() : undefined,
+            status
         }
     });
 }
@@ -66,9 +82,9 @@ export async function findAllAlunos(search?: string | null | undefined,
 }
 
 export async function updateAluno(id: string, formData: FormData) {
-    const nome = formData.get("nome") as string;
-    const nome_pai = formData.get("nome_pai") as string;
-    const nome_mae = formData.get("nome_mae") as string;
+    const nome = String(formData.get("nome")).toUpperCase();
+    const nome_pai = String(formData.get("nome_pai")).toUpperCase();
+    const nome_mae = String(formData.get("nome_mae")).toUpperCase();
     const status = formData.get("status") as Status;
 
     try {
