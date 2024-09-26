@@ -1,43 +1,29 @@
-FROM node:20-alpine AS base
+# Use a imagem base do Node.js
+FROM node:20
 
-FROM base AS deps
-
-RUN apk add --no-cache libc6-compat
+# Defina o diretório de trabalho
 WORKDIR /app
 
-COPY package.json ./
+# Copie o package.json e package-lock.json (ou yarn.lock) para instalar as dependências
+COPY package*.json ./
 
-RUN npm update && npm install
+# Instale as dependências
+RUN npm install --legacy-peer-deps
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copie todo o diretório do projeto
 COPY . .
 
-RUN npm run build
+ENV NODE_ENV=production
+ENV DATABASE_URL=mysql://root@host.docker.internal:3306/doc_escola
+ENV AUTH_SECRET=18171157e3edac7d477b3f34602e5afa
+ENV NEXTAUTH_URL=http://localhost:3000
+ENV PORT=3000
 
-FROM base AS runner
-WORKDIR /app
+# Execute o build do Next.js
+RUN npx prisma db push && npm run build
 
-ENV NODE_ENV production
-ENV DATABASE_URL mysql://root@localhost:3306/doc_escola
-ENV AUTH_SECRET 18171157e3edac7d477b3f34602e5afa
-ENV NEXTAUTH_URL http://localhost:3000
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
+# Exponha a porta que o aplicativo Next.js irá rodar
 EXPOSE 3000
 
-ENV PORT 3000
-
-CMD ["node", "server.js"]
+# Comando para iniciar o aplicativo
+CMD ["npm", "start"]
