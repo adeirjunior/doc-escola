@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <CardHeader>
             <CardTitle>{aluno?.nome ?? "Aluno"}</CardTitle>
             <CardDescription>
-                Informações sobre esta escola
+                Informações sobre este aluno
             </CardDescription>
         </CardHeader>
         <CardContent>
