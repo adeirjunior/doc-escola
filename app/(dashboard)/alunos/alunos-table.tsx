@@ -87,7 +87,7 @@ export function AlunosTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset - limit, totalAlunos) + 1}-{offset}
+              {Math.min(offset - limit, totalAlunos) + 1}-{Math.min(offset, totalAlunos)}
             </strong>{' '}
             de <strong>{totalAlunos}</strong> alunos
           </div>
@@ -107,7 +107,7 @@ export function AlunosTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset + limit > totalAlunos}
+              disabled={offset + limit >= totalAlunos + limit}
             >
               Próxima
               <ChevronRight className="ml-2 h-4 w-4" />

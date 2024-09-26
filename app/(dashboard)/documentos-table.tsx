@@ -70,7 +70,7 @@ export function DocumentosTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset - limit, totalDocumentos) + 1}-{offset}
+              {Math.min(offset - limit, totalDocumentos) + 1}-{Math.min(offset, totalDocumentos)}
             </strong>{' '}
             de <strong>{totalDocumentos}</strong> documentos
           </div>
@@ -90,7 +90,7 @@ export function DocumentosTable({
               variant="ghost"
               size="sm"
               type="submit"
-              disabled={offset + limit > totalDocumentos}
+              disabled={offset + limit >= totalDocumentos + limit}
             >
               Próxima
               <ChevronRight className="ml-2 h-4 w-4" />

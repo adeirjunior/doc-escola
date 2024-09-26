@@ -22,7 +22,7 @@ export function EscolasTable({
   const searchParams = useSearchParams();
 
   function prevPage() {
-    const newOffset = Math.max(0, offset - limit);
+    const newOffset = Math.max(0, offset - limit * 2);
 
     const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
@@ -30,9 +30,8 @@ export function EscolasTable({
   }
 
   function nextPage() {
-    const newOffset = offset + limit;
 
-    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
     router.push(`/escolas${queryString}`, { scroll: false });
   }
@@ -71,7 +70,7 @@ export function EscolasTable({
           <div className="text-xs text-muted-foreground">
             Mostrando{' '}
             <strong>
-              {Math.min(offset + 1, totalEscolas)}-{Math.min(offset + limit, totalEscolas)}
+              {Math.min(offset - limit, totalEscolas) + 1}-{Math.min(offset, totalEscolas)}
             </strong>{' '}
             de <strong>{totalEscolas}</strong> escolas
           </div>
@@ -80,7 +79,7 @@ export function EscolasTable({
               onClick={prevPage}
               variant="ghost"
               size="sm"
-              disabled={offset === 0}
+              disabled={offset === limit}
             >
               <ChevronLeft className="mr-2 h-4 w-4" />
               Anterior
@@ -89,7 +88,7 @@ export function EscolasTable({
               onClick={nextPage}
               variant="ghost"
               size="sm"
-              disabled={offset + limit >= totalEscolas}
+              disabled={offset + limit >= totalEscolas + limit}
             >
               Próxima
               <ChevronRight className="ml-2 h-4 w-4" />
