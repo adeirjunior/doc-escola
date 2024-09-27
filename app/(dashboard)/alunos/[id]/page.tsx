@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { findAllAlunos, findAlunoById, updateAluno } from "@/lib/actions/student";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -14,13 +15,13 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-    const aluno = await findAlunoById(params.id);
+    const aluno = await findAlunoById(params.id, 'ativo');
 
     if (!aluno) {
         notFound()
     }
 
-    return <Card>
+    return <><Card>
         <CardHeader>
             <CardTitle>{aluno?.nome ?? "Aluno"}</CardTitle>
             <CardDescription>
@@ -42,4 +43,16 @@ export default async function Page({ params }: { params: { id: string } }) {
             <Button form="updateForm">Salvar</Button>
         </CardFooter>
     </Card>
+        <Card>
+            <CardHeader>
+                <CardTitle>Documentos Registrados</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                {aluno.documentos.map(documento => (
+                    <Card className="p-4 flex justify-between items-center" key={documento.id}>
+                        <p className="font-semibold">{documento.ano_final}</p>
+                        <Link className="text-blue-500" href={`/documentos/${documento.id}`}>Ver</Link>
+                    </Card>))}
+            </CardContent>
+        </Card></>
 }

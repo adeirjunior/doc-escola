@@ -14,34 +14,29 @@ export default function Error({
     console.error(error);
   }, [error]);
 
+  const errorMessage = Array.isArray(error.message)
+    ? error.message.map((err, index) => (
+      <li key={index}>{err.message}</li>
+    ))
+    : <p>{error.message}</p>;
+
   return (
     <main className="p-4 md:p-6">
       <div className="mb-8 space-y-4">
-        <h1 className="font-semibold text-lg md:text-2xl">
-          Erro
-        </h1>
-        <p>
-          {error.message}
-        </p>
-        <pre className="my-4 px-3 py-4 bg-black text-white rounded-lg max-w-2xl overflow-scroll flex text-wrap">
-          <code>
-            {`CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  email VARCHAR(255) NOT NULL,
-  name VARCHAR(255),
-  username VARCHAR(255)
-);`}
-          </code>
-        </pre>
-        <p>Insert a row for testing:</p>
-        <pre className="my-4 px-3 py-4 bg-black text-white rounded-lg max-w-2xl overflow-scroll flex text-wrap">
-          <code>
-            {`INSERT INTO users (id, email, name, username) VALUES (1, 'me@site.com', 'Me', 'username');`}
-          </code>
-        </pre>
+        <h1 className="font-semibold text-lg md:text-2xl">Erro</h1>
+        {Array.isArray(error.message) ? (
+          <ul className="list-disc pl-5">
+            {errorMessage}
+          </ul>
+        ) : (
+          errorMessage
+        )}
       </div>
 
-      <span>Acredita que não há erro? <Button className='ml-2' onClick={() => reset()}>Tente novamente</Button></span>
+      <span>
+        Acredita que não há erro?
+        <Button className='ml-2' onClick={reset}>Tente novamente</Button>
+      </span>
     </main>
   );
 }

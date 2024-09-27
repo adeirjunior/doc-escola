@@ -40,7 +40,7 @@ export async function findEscolaByNome(nome: string) {
     });
 }
 
-export async function findEscolaById(id: string) {
+export async function findEscolaById(id: string, status?: Status) {
     // Encontrar a escola pelo id
     const escola = await prisma.escola.findUnique({
         where: {
@@ -74,6 +74,7 @@ export async function findEscolaById(id: string) {
             id: {
                 in: alunoIds,
             },
+            status
         },
     });
 
@@ -122,6 +123,7 @@ export async function findAllEscolas(
             const alunos = await prisma.documento.findMany({
                 where: {
                     id_escola: escola.id,
+                    status: 'ativo'
                 },
                 select: {
                     id_aluno: true,
@@ -155,8 +157,9 @@ export async function updateEscola(id: string, formData: FormData) {
         console.log("Validação bem-sucedida!", validEscola);
     } catch (error) {
         if (error instanceof ZodError) {
+            const errorMessages = error.errors.map(err => err.message).join(', ');
             console.log("Erros de validação:", error.errors);
-            throw new Error(error.message)
+            throw new Error(errorMessages); 
         } else {
             console.error("Erro inesperado:", error);
         }

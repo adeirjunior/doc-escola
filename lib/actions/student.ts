@@ -17,7 +17,7 @@ export async function createAluno(usuarioId: string, nome?: string, nome_pai?: s
             console.error("Erro inesperado:", error);
         }
     }
-    
+
     return await prisma.aluno.create({
         data: {
             usuario: { connect: { id: usuarioId } },
@@ -29,10 +29,26 @@ export async function createAluno(usuarioId: string, nome?: string, nome_pai?: s
     });
 }
 
-export async function findAlunoById(id: string) {
-    return await prisma.aluno.findUnique({
+export async function findAlunoById(id: string, status?: Status) {
+    const aluno = await prisma.aluno.findUnique({
         where: { id }
     });
+
+    if (!aluno) {
+        return null;
+    }
+
+    const documentos = await prisma.documento.findMany({
+        where: {
+            id_aluno: aluno.id,
+            status
+        },
+    });
+
+    return {
+        ...aluno,
+        documentos,
+    };
 }
 
 export async function findAlunos() {
@@ -65,7 +81,11 @@ export async function findAllAlunos(search?: string | null | undefined,
         include: {
             _count: {
                 select: {
-                    documentos: true
+                    documentos: {
+                        where: {
+                            status: 'ativo'
+                        }
+                    }
                 }
             }
         },
@@ -92,8 +112,9 @@ export async function updateAluno(id: string, formData: FormData) {
         console.log("Validação bem-sucedida!", validAluno);
     } catch (error) {
         if (error instanceof ZodError) {
+            const errorMessages = error.errors.map(err => err.message).join(', ');
             console.log("Erros de validação:", error.errors);
-            throw new Error(error.message)
+            throw new Error(errorMessages);
         } else {
             console.error("Erro inesperado:", error);
         }

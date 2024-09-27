@@ -15,7 +15,7 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
-    const escola = await findEscolaById(params.id);
+    const escola = await findEscolaById(params.id, 'ativo');
 
     if (!escola) {
         notFound()

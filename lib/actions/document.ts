@@ -74,14 +74,15 @@ export async function updateDocumento(id: string, formData: FormData) {
         console.log("Validação bem-sucedida!", validDocumento);
     } catch (error) {
         if (error instanceof ZodError) {
+            const errorMessages = error.errors.map(err => err.message).join(', ');
             console.log("Erros de validação:", error.errors);
-            throw new Error(error.message)
+            throw new Error(errorMessages);
         } else {
             console.error("Erro inesperado:", error);
         }
     }
 
-    const uploadDir = path.join(process.cwd(), 'public', 'old');
+    const uploadDir = path.join(process.cwd(), 'public', 'old', id_aluno);
     await fs.mkdir(uploadDir, { recursive: true });
 
     let url = formData.get("url") as string;
@@ -96,7 +97,7 @@ export async function updateDocumento(id: string, formData: FormData) {
 
         await fs.writeFile(filePath, fileBuffer);
 
-        url = `/old/${sanitizedFileName}`;
+        url = `/old/${id_aluno}/${sanitizedFileName}`;
     }
 
     const documento = await prisma.documento.update({
