@@ -45,11 +45,11 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
     
     React.useEffect(() => {
         const savedEscolaId = localStorage.getItem("selectedEscolaId");
-        if (savedEscolaId) {
+        if (savedEscolaId && !defaultValue) {
             const escola = escolas.find((escola) => escola.id === savedEscolaId) || null;
             setSelectedEscolas(escola);
         }
-    }, [escolas]);
+    }, [defaultValue, escolas]);
 
     const handleCreateEscola = () => {
         try {
@@ -149,15 +149,16 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
                                     </DialogContent>
                                 </Dialog>
                             </CommandEmpty>
-                            <CommandGroup>
+                            <CommandGroup heading="Escolas">
                                 {escolas.map((escola) => (
                                     <CommandItem
                                         key={escola.id}
-                                        value={escola.id}
-                                        onSelect={(value) => {
-                                            const selected = escolas.find((s) => s.id === value) || null;
+                                        value={escola.nome!}
+                                        onSelect={(value: string) => {
+                                            const selected = escolas.find((s) => s.nome === value) || null;
                                             setSelectedEscolas(selected);
-                                            localStorage.setItem("selectedEscolaId", value);
+                                            // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+                                            localStorage.setItem("selectedEscolaId", selected?.id!);
                                             setOpen(false);
                                         }}
                                     >

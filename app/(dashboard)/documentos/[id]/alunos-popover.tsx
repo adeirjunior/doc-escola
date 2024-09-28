@@ -152,13 +152,14 @@ export function AlunosPopover({ alunos, defaultValue, name }: { name: string, al
                                     </DialogContent>
                                 </Dialog>
                             </CommandEmpty>
-                            <CommandGroup>
+                            <CommandGroup heading="Alunos">
                                 {alunos.map((aluno) => (
                                     <CommandItem
                                         key={aluno.id}
-                                        value={aluno.id}
-                                        onSelect={(value) => {
-                                            const selected = alunos.find((s) => s.id === value) || null;
+                                        value={aluno.nome!}
+                                        onSelect={(value: string
+                                        ) => {
+                                            const selected = alunos.find((s) => s.nome === value) || null;
                                             setSelectedAlunos(selected);
                                             setOpen(false);
                                         }}
