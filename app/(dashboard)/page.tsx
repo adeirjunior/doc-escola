@@ -30,7 +30,7 @@ export default async function DocumentosPage({
 
   const newestOffset = Math.max(0, offset - limit * 2);
 
-  const queryString = `?offset=${newestOffset}${searchParams.q ? `&q=${searchParams.q}` : ''}`;
+  const queryString = `?offset=${newestOffset}${searchParams.escola ? `&escola=${searchParams.escola}` : ''}${searchParams.q ? `&q=${searchParams.q}` : ''}`;
 
   if (!session?.user?.id) {
     return <div>Unable to create school, user not logged in.</div>;
