@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createEscola, findAllEscolas } from '@/lib/actions/school';
-import { EscolasTable } from './escolas-table';
+import { EscolasTable } from '@/app/(dashboard)/escolas/escolas-table';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Status } from '@prisma/client';
@@ -30,7 +30,7 @@ export default async function EscolasPage({
     const queryString = `?offset=${newestOffset}${searchParams.q ? `&q=${searchParams.q}` : ''}`;
 
     if (!session?.user?.id) {
-        return <div>Unable to create school, user not logged in.</div>;
+        return <div>Impossível acessar dados, usuário não esta logado.</div>;
     }
 
     return (

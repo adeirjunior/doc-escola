@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableHead, TableRow, TableHeader } from '@/components/ui/table';
-import { Documento } from './documento';
+import { Documento } from '@/app/(dashboard)/documento';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Aluno, Escola, Documento as DocumentoType } from '@prisma/client';
 

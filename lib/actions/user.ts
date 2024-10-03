@@ -1,6 +1,6 @@
 "use server"
 import { revalidatePath } from "next/cache";
-import prisma from "./../prisma";
+import prisma from "@/lib/prisma";
 
 export async function createUsuario(username: string, nome: string, senha: string) {
     return await prisma.usuario.create({

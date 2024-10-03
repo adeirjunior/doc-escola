@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { AlunosTable } from './alunos-table';
+import { AlunosTable } from '@/app/(dashboard)/alunos/alunos-table';
 import { createAluno, findAllAlunos } from '@/lib/actions/student';
 import Link from 'next/link';
 import { Status } from '@prisma/client';

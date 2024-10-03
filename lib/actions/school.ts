@@ -1,8 +1,8 @@
 "use server"
 import { revalidatePath } from "next/cache";
-import prisma from "./../prisma";
+import prisma from "@/lib/prisma";
 import { Status } from "@prisma/client";
-import { escolaSchema } from "../zod";
+import { escolaSchema } from "@/lib/zod";
 import { ZodError } from "zod";
 
 export async function createEscola(usuarioId: string, endereco?: string, nome?: string, status?: Status ) {

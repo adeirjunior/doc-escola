@@ -1,10 +1,10 @@
 "use server"
 import { Status } from "@prisma/client";
-import prisma from "./../prisma";
+import prisma from "@/lib/prisma";
 import { promises as fs } from 'fs';
 import path from 'path';
 import { revalidatePath } from "next/cache";
-import { documentoSchema } from "../zod";
+import { documentoSchema } from "@/lib/zod";
 import { ZodError } from "zod";
 
 export async function createDocumento(usuarioId: string) {

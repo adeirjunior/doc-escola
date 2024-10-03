@@ -3,13 +3,13 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { findAllDocumentos, findDocumentoById, updateDocumento } from "@/lib/actions/document";
 import { notFound } from "next/navigation";
-import { AlunosPopover } from "./alunos-popover";
+import { AlunosPopover } from "@/app/(dashboard)/documentos/[id]/alunos-popover";
 import { findAlunos } from "@/lib/actions/student";
 import { ComboboxPopover } from "@/components/status-popover";
-import { EscolasPopover } from "./escolas-popover";
+import { EscolasPopover } from "@/app/(dashboard)/documentos/[id]/escolas-popover";
 import { findEscolas } from "@/lib/actions/school";
-import DocumentPDFViewer from "./document-pdf-viewer";
-import NewDocumentButton from "./new-document";
+import DocumentPDFViewer from "@/app/(dashboard)/documentos/[id]/document-pdf-viewer";
+import NewDocumentButton from "@/app/(dashboard)/documentos/[id]/new-document";
 
 export async function generateStaticParams() {
     const { documentos } = await findAllDocumentos()

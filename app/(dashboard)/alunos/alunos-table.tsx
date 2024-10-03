@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
-import { Aluno } from './aluno';
+import { Aluno } from '@/app/(dashboard)/alunos/aluno';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -75,11 +75,10 @@ export default function Sample({ url, name }: { url: string; name: string }) {
                         <Document file={file} onLoadSuccess={onDocumentLoadSuccess} options={options}>
                             {Array.from(new Array(numPages), (_, index) => (
                                 <Page
-                                    key={index}
+                                    key={`page_${index + 1}`}
                                     pageNumber={index + 1}
                                 />
-                            ),
-                            )}
+                            ))}
                         </Document>
                     </Suspense>
                 </div>

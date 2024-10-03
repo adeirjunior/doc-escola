@@ -1,8 +1,8 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { ZodError } from 'zod';
-import { signInSchema } from './zod';
-import { findUsuarioByUsername } from './actions/user';
+import { signInSchema } from '@/lib/zod';
+import { findUsuarioByUsername } from '@/lib/actions/user';
 import type { Provider } from "next-auth/providers"
 
 const providers: Provider[] = [
@@ -44,7 +44,8 @@ const providers: Provider[] = [
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers,
   pages: {
-    signIn: "/login",
+    signIn: `${process.env.BASE_URL}/login`,
+    error: `${process.env.BASE_URL}/login`
   },
   callbacks: {
     authorized: async ({ auth }) => {

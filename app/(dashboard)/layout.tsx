@@ -14,15 +14,15 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip';
-import { User } from './user';
+import { User } from '@/app/(dashboard)/user';
 import { VercelLogo } from '@/components/icons';
-import Providers from './providers';
-import { NavItem } from './nav-item';
-import { SearchInput } from './search';
+import Providers from '@/app/(dashboard)/providers';
+import { NavItem } from '@/app/(dashboard)/nav-item';
+import { SearchInput } from '@/app/(dashboard)/search';
 import { Suspense } from 'react';
-import DashboardBreadcrumb from './dashboard-breadcrumb';
+import DashboardBreadcrumb from '@/app/(dashboard)/dashboard-breadcrumb';
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children
 }: {
   children: React.ReactNode;

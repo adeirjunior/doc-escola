@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import './globals.css';
+import '@/app/globals.css';
 
 export const metadata = {
   title: 'Doc Escola',
@@ -7,7 +7,7 @@ export const metadata = {
     'Programa de consulta de documentos escolares.'
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: ReactNode;

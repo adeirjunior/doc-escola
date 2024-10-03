@@ -36,7 +36,7 @@ export default async function LoginPage({searchParams}: {searchParams: { error: 
                 await signIn("credentials", { ...data });
               } catch (error) {
                 if (error instanceof AuthError) {
-                  return redirect(`${process.env.NEXTAUTH_URL}/login?error=${error.type}`);
+                  return redirect(`${process.env.NEXTAUTH_URL}${process.env.BASE_URL}/login?error=${error.type}`);
                 }
                 throw error;
               }

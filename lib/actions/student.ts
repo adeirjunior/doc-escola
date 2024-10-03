@@ -1,8 +1,8 @@
 "use server"
 import { Aluno, Status } from "@prisma/client";
-import prisma from "./../prisma";
+import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-import { alunoSchema } from "../zod";
+import { alunoSchema } from "@/lib/zod";
 import { ZodError } from "zod";
 
 export async function createAluno(usuarioId: string, nome?: string, nome_pai?: string, nome_mae?: string, status?: Status) {

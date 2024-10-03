@@ -1,14 +1,14 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { DocumentosTable } from './documentos-table';
+import { DocumentosTable } from '@/app/(dashboard)/documentos-table';
 import { createDocumento, findAllDocumentos } from '@/lib/actions/document';
 import { Status } from '@prisma/client';
-import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { FilterByEscolasPopover } from './filter-by-escolas-popover';
+import { FilterByEscolasPopover } from '@/app/(dashboard)/filter-by-escolas-popover';
+import { auth } from '@/lib/auth';
 
 export default async function DocumentosPage({
   searchParams
@@ -28,13 +28,13 @@ export default async function DocumentosPage({
     Number(offset)
   );
 
+  if (!session?.user?.id) {
+    return <div>Impossível acessar dados, usuário não esta logado.</div>;
+  }
+
   const newestOffset = Math.max(0, offset - limit * 2);
 
   const queryString = `?offset=${newestOffset}${searchParams.escola ? `&escola=${searchParams.escola}` : ''}${searchParams.q ? `&q=${searchParams.q}` : ''}`;
-
-  if (!session?.user?.id) {
-    return <div>Unable to create school, user not logged in.</div>;
-  }
 
   return (
       <Tabs defaultValue={searchParams.status || "tudo"} >
