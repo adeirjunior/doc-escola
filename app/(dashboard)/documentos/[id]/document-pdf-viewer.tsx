@@ -21,10 +21,6 @@ async function urlToFile(path: string, filename: string, mimeType: string): Prom
 
     const response = await fetch(url);
 
-    if (!response.ok) {
-        throw new Error(`Erro ao buscar o arquivo: ${response.statusText}`);
-    }
-
     const blob = await response.blob();
 
     return new File([blob], filename, { type: mimeType });
