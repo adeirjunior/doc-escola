@@ -13,7 +13,7 @@ import { Escola as EscolaType } from '@prisma/client';
 import { arquiveEscola } from '@/lib/actions/school';
 import Link from 'next/link';
 
-export function Escola({ escola }: { escola: EscolaType & {totalAlunos: number} }) {
+export function Escola({ escola }: { escola: EscolaType & {totalAlunos?: number} }) {
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">

@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { findAllAlunos, findAlunoById, updateAluno } from "@/lib/actions/student";
-import Link from "next/link";
+import { Status } from "@prisma/client";
+import { DocumentosTable } from "app/(dashboard)/documentos-table";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -14,8 +15,11 @@ export async function generateStaticParams() {
     }))
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
-    const aluno = await findAlunoById(params.id, 'ativo');
+export default async function page({ params, searchParams }: { params: { id: string }, searchParams: { q: string | undefined; offset: number | undefined, status: Status | undefined }; }) {
+    const search = searchParams.q ?? '';
+    const offset = searchParams.offset ?? 0;
+
+    const {documentos, totalDocumentos, limit, newOffset, ...aluno} = await findAlunoById(params.id, search, offset, 'ativo');
 
     if (!aluno) {
         notFound()
@@ -48,11 +52,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <CardTitle>Documentos Registrados</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                {aluno.documentos.map(documento => (
-                    <Card className="p-4 flex justify-between items-center" key={documento.id}>
-                        <p className="font-semibold">{documento.ano_final}</p>
-                        <Link className="text-blue-500" href={`/documentos/${documento.id}`}>Ver</Link>
-                    </Card>))}
+                <DocumentosTable documentos={documentos} limit={limit} offset={newOffset ?? 0} totalDocumentos={totalDocumentos}/>
             </CardContent>
         </Card></>
 }

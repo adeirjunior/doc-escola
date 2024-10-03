@@ -1,5 +1,5 @@
 "use server"
-import { Status } from "@prisma/client";
+import { Aluno, Status } from "@prisma/client";
 import prisma from "./../prisma";
 import { revalidatePath } from "next/cache";
 import { alunoSchema } from "../zod";
@@ -29,25 +29,35 @@ export async function createAluno(usuarioId: string, nome?: string, nome_pai?: s
     });
 }
 
-export async function findAlunoById(id: string, status?: Status) {
+export async function findAlunoById(id: string, search: string, offset: number, status?: Status, limit: number = 6) {
     const aluno = await prisma.aluno.findUnique({
         where: { id }
-    });
-
-    if (!aluno) {
-        return null;
-    }
+    }) as Aluno;
 
     const documentos = await prisma.documento.findMany({
         where: {
-            id_aluno: aluno.id,
-            status
+            id_aluno: id,
+            status,
+            escola: {
+                nome: {
+                    contains: search
+                }
+            }
         },
+        include: {
+            aluno: true,
+            escola: true
+        },
+        skip: Number(offset),
+        take: limit
     });
 
-    return {
+        return {
         ...aluno,
-        documentos,
+            documentos,
+            newOffset: offset + limit,
+            totalDocumentos: documentos.length,
+            limit
     };
 }
 
@@ -90,19 +100,24 @@ export async function findAllAlunosWhereSchoolId(id: string, search: string, off
                 },
             },
         },
-        skip: Number(offset)
+        skip: Number(offset),
+        take: limit
     });
 
     const alunos = data
         .map(d => d.aluno)
         .filter(aluno => aluno !== null);
 
+    const uniqueAlunos = Array.from(
+        new Map(alunos.map(aluno => [aluno.id, aluno])).values()
+    );
+
     return {
-        alunos,
+        alunos: uniqueAlunos,
         newOffset: offset + limit,
-        totalAlunos: alunos.length,
+        totalAlunos: uniqueAlunos.length,
         limit
-    }
+    };
 }
 
 export async function findAllAlunos(search?: string | null | undefined,
