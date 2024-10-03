@@ -93,6 +93,20 @@ export async function findEscolas() {
     })
 }
 
+export async function getAllEscolasNames() {
+    const escolas = await prisma.escola.findMany({
+        select: {
+            nome: true
+        }
+    });
+
+    const nomesEscolas = escolas
+        .map(escola => escola.nome)
+        .filter(nome => nome !== null);
+
+    return nomesEscolas;
+}
+
 export async function findAllEscolas(
     search?: string | null | undefined,
     status?: Status | null | undefined,

@@ -24,13 +24,13 @@ export function DocumentosTable({
   function prevPage() {
     const newOffset = Math.max(0, offset - limit * 2);
 
-    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+    const queryString = `?offset=${newOffset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('escola') ? `&escola=${searchParams.get('escola')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
     router.push(`/${queryString}`)
   }
 
   function nextPage() {
-    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
+    const queryString = `?offset=${offset}${searchParams.get('q') ? `&q=${searchParams.get('q')}` : ''}${searchParams.get('escola') ? `&escola=${searchParams.get('escola')}` : ''}${searchParams.get('status') ? `&status=${searchParams.get('status')}` : ''}`;
 
     router.push(`/${queryString}`, { scroll: false });
   }

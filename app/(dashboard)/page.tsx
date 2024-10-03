@@ -8,19 +8,22 @@ import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import { FilterByEscolasPopover } from './filter-by-escolas-popover';
 
 export default async function DocumentosPage({
   searchParams
 }: {
-    searchParams: { q: string | undefined; offset: number | undefined, status: Status | undefined };
+    searchParams: { q: string | undefined; offset: number | undefined, status: Status | undefined, escola: string | undefined };
 }) {
   const session = await auth();
   const search = searchParams.q ?? '';
+  const escola = searchParams.escola ?? '';
   const status = searchParams.status;
   const offset = searchParams.offset ?? 0;
 
   const { documentos, newOffset, totalDocumentos, limit } = await findAllDocumentos(
     search,
+    escola,
     status,
     Number(offset)
   );
@@ -53,6 +56,7 @@ export default async function DocumentosPage({
             </Link>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
+          <FilterByEscolasPopover/>
             <form action={async () => {
               "use server"
               const documento = await createDocumento(session.user?.id as string);

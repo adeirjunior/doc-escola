@@ -19,7 +19,7 @@ export function SearchInput() {
     const q = formData.get('q') as string;
     const newOffset = Math.max(0, offset - 12);
 
-    const queryString = `?offset=${newOffset}${q ? `&q=${q}` : ''}${searchParams.get('status') ? `&status=${status}` : ''}`;
+    const queryString = `?offset=${newOffset}${q ? `&q=${q}` : ''}${searchParams.get('escola') ? `&escola=${searchParams.get('escola')}` : ''}${searchParams.get('status') ? `&status=${status}` : ''}`;
 
     startTransition(() => {
       router.replace(`${queryString}`);

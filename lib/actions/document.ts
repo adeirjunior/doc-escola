@@ -25,7 +25,9 @@ export async function findDocumentoById(id: string) {
     });
 }
 
-export async function findAllDocumentos(search?: string | null | undefined,
+export async function findAllDocumentos(
+    search?: string | null | undefined,
+    escola?: string | null | undefined,
     status?: Status | null | undefined,
     offset: number = 0,
     limit: number = 6) {
@@ -38,6 +40,12 @@ export async function findAllDocumentos(search?: string | null | undefined,
                 }
             } : undefined,
         status: status !== null && status !== undefined ? status : undefined,
+        escola: escola
+            ? {
+                nome: {
+                    contains: escola
+                }
+            } : undefined,
     };
 
     const totalDocumentos = await prisma.documento.count({
