@@ -59,6 +59,52 @@ export async function findAlunos() {
     })
 }
 
+export async function findAllAlunosWhereSchoolId(id: string, search: string, offset: number, limit: number = 6) {
+    const whereClause = {
+        id_escola: id,
+        aluno: {
+            nome: search
+                ? {
+                    contains: search,
+                }
+                : undefined,
+        },
+        status: 'ativo' as Status
+    };
+
+
+    const data = await prisma.documento.findMany({
+        where: whereClause,
+        select: {
+            aluno: {
+                include: {
+                    _count: {
+                        select: {
+                            documentos: {
+                                where: {
+                                    status: 'ativo'
+                                }
+                            }
+                        }
+                    }
+                },
+            },
+        },
+        skip: Number(offset)
+    });
+
+    const alunos = data
+        .map(d => d.aluno)
+        .filter(aluno => aluno !== null);
+
+    return {
+        alunos,
+        newOffset: offset + limit,
+        totalAlunos: alunos.length,
+        limit
+    }
+}
+
 export async function findAllAlunos(search?: string | null | undefined,
     status?: Status | null | undefined,
     offset: number = 0,

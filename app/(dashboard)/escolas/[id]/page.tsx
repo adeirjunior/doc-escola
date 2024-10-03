@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { findAllEscolas, findEscolaById, updateEscola } from "@/lib/actions/school";
-import Link from "next/link";
+import { findAllAlunosWhereSchoolId } from "@/lib/actions/student";
+import { auth } from "@/lib/auth";
+import { Status } from "@prisma/client";
+import { AlunosTable } from "app/(dashboard)/alunos/alunos-table";
 import { notFound } from "next/navigation";
 
 export async function generateStaticParams() {
@@ -14,8 +17,17 @@ export async function generateStaticParams() {
     }))
 }
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params, searchParams }: { params: { id: string }, searchParams: { q: string | undefined; offset: number | undefined, status: Status | undefined }; }) {
     const escola = await findEscolaById(params.id, 'ativo');
+    const session = await auth();
+    const search = searchParams.q ?? '';
+    const offset = searchParams.offset ?? 0;
+
+    const { alunos, totalAlunos, newOffset, limit } = await findAllAlunosWhereSchoolId(params.id, search, offset);
+
+    if (!session?.user?.id) {
+        return <div>Unable to create school, user not logged in.</div>;
+    }
 
     if (!escola) {
         notFound()
@@ -48,11 +60,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <CardTitle>Alunos Registrados</CardTitle>
             </CardHeader>
             <CardContent>
-                {escola.alunos.map(aluno => (
-                    <Card className="p-4 flex justify-between items-center" key={aluno.id}>
-                        <p className="font-semibold">{aluno.nome}</p>
-                        <Link className="text-blue-500" href={`/alunos/${aluno.id}`}>Ver</Link>
-                    </Card>))}
+                <AlunosTable alunos={alunos} limit={limit} offset={newOffset ?? 0} totalAlunos={totalAlunos} />
             </CardContent>
         </Card>
     </>
