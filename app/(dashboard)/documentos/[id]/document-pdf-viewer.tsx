@@ -4,20 +4,17 @@ import { useState, useEffect, Suspense, useMemo } from 'react';
 import { pdfjs, Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import 'react-pdf/dist/esm/Page/TextLayer.css';
-
-import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 type PDFFile = string | File | null;
 
 async function urlToFile(path: string, filename: string, mimeType: string): Promise<File> {
-    const url = `${path}`;
+    const url = `${process.env.NEXT_PUBLIC_BASE_URL ?? ""}${path}`;
+
+    console.log(url)
 
     const response = await fetch(url);
 
@@ -32,8 +29,8 @@ export default function Sample({ url, name }: { url: string; name: string }) {
 
     const options = useMemo(() => {
         return {
-            cMapUrl: '/bcmaps/',
-            standardFontDataUrl: '/standard_fonts/',
+            cMapUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/bcmaps/`,
+            standardFontDataUrl: `${process.env.NEXT_PUBLIC_BASE_URL ?? ''}/standard_fonts/`,
             cMapPacked: true,
         };
     }, []);
@@ -55,8 +52,8 @@ export default function Sample({ url, name }: { url: string; name: string }) {
         }
     }
 
-    function onDocumentLoadSuccess({ numPages }: PDFDocumentProxy): void {
-        setNumPages(numPages); // <== here is the issue #1 - we save page number of file, but in case it's changed, we know about new number only after it's loaded, before doc is loaded, this value is wrong
+    function onDocumentLoadSuccess({ numPages }: {numPages: number}) {
+        setNumPages(numPages);
     }
 
     return (
@@ -74,11 +71,9 @@ export default function Sample({ url, name }: { url: string; name: string }) {
                     <Suspense fallback={<p>Carregando...</p>}>
                         <Document file={file} onLoadSuccess={onDocumentLoadSuccess} options={options}>
                             {Array.from(new Array(numPages), (_, index) => (
-                                <Page
-                                    key={`page_${index + 1}`}
-                                    pageNumber={index + 1}
-                                />
+                                <Page key={`page_${index + 1}`} pageNumber={index + 1} />
                             ))}
+
                         </Document>
                     </Suspense>
                 </div>

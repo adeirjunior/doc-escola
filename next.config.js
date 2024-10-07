@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: process.env.BASE_URL,
+  env: {
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL
+  },
+  basePath: process.env.NEXT_PUBLIC_BASE_URL,
   experimental: {
     serverActions: {
       bodySizeLimit: '20mb',

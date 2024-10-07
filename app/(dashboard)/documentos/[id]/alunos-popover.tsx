@@ -30,10 +30,10 @@ import {
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { createAluno } from "@/lib/actions/student"; // Importa a função para criar aluno
+import { createAluno } from "@/lib/actions/student";
 import { useSession } from "next-auth/react";
 
-export function AlunosPopover({ alunos, defaultValue, name }: { name: string, alunos: Aluno[], defaultValue: string | null }) {
+export function AlunosPopover({ alunos, defaultValue, name }: { name: string, alunos: Aluno[], defaultValue?: string | null }) {
     const [open, setOpen] = React.useState(false);
     const [selectedAlunos, setSelectedAlunos] = React.useState<Aluno | null>(
         alunos.find((aluno) => aluno.id === defaultValue) || null

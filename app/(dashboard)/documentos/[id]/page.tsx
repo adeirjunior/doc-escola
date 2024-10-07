@@ -28,7 +28,6 @@ export default async function page({ params }: { params: { id: string } }) {
         notFound()
     }
 
-
     return <form id="updateForm" action={async (formData) => {
         "use server"
         await updateDocumento(params.id, formData)

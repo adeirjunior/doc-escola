@@ -18,6 +18,7 @@ ENV DATABASE_URL="mysql://root@host.docker.internal:3306/nova_doc_escola"
 ENV AUTH_SECRET="18171157e3edac7d477b3f34602e5afa"
 ENV NEXTAUTH_URL="http://localhost:3000"
 ENV PORT="3000"
+ENV NEXT_PUBLIC_BASE_URL="/nova_doc_escola"
 ENV BASE_URL="/nova_doc_escola"
 
 # Execute o build do Next.js

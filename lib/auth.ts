@@ -44,8 +44,8 @@ const providers: Provider[] = [
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers,
   pages: {
-    signIn: `${process.env.BASE_URL}/login`,
-    error: `${process.env.BASE_URL}/login`
+    signIn: `${process.env.NEXT_PUBLIC_BASE_URL}/login`,
+    error: `${process.env.NEXT_PUBLIC_BASE_URL}/login`
   },
   callbacks: {
     authorized: async ({ auth }) => {

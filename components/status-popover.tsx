@@ -49,7 +49,7 @@ const statuses: Status[] = [
     },
 ]
 
-export function ComboboxPopover({ defaultValue, name }: { defaultValue: StatusType; name: string }) {
+export function ComboboxPopover({ defaultValue, name }: { defaultValue?: StatusType; name: string }) {
     const [open, setOpen] = React.useState(false);
     const [selectedStatus, setSelectedStatus] = React.useState<Status | null>(
         statuses.find((status) => status.value === defaultValue) || null

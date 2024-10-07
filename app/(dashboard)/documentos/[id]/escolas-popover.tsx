@@ -33,7 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { createEscola } from "@/lib/actions/school";
 import { useSession } from "next-auth/react"
 
-export function EscolasPopover({ escolas, defaultValue, name }: { name: string, escolas: Escola[], defaultValue: string | null }) {
+export function EscolasPopover({ escolas, defaultValue, name }: { name: string, escolas: Escola[], defaultValue?: string | null }) {
     const [open, setOpen] = React.useState(false);
     const [selectedEscolas, setSelectedEscolas] = React.useState<Escola | null>(
         escolas.find((escola) => escola.id === defaultValue) || null
@@ -51,11 +51,11 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
         }
     }, [defaultValue, escolas]);
 
-    const handleCreateEscola = () => {
-        try {
-            start(async () => {
+    const handleCreateEscola = async () => {
+        start(async () => {
+            try {
                 if (!session?.user?.id) {
-                    throw new Error("Erro ao criar escola");
+                    throw new Error("Erro ao criar aluno");
                 }
                 const escola = await createEscola(session.user.id, enderecoEscola, nomeEscola, 'ativo');
 
@@ -66,11 +66,11 @@ export function EscolasPopover({ escolas, defaultValue, name }: { name: string, 
                 } else {
                     throw new Error("Erro ao criar escola");
                 }
-            });
-
-        } catch (error) {
-            console.error(error);
-        }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (error: any) {
+                throw new Error(error);
+            }
+        })
     };
 
     return (
