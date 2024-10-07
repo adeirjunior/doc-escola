@@ -23,7 +23,7 @@ export const alunoSchema = requiredFields(object({
   nome_pai: optional(string().max(150, 'Nome do pai não pode ter mais que 150 caracteres')), // Campo não obrigatório
   nome_mae: optional(string().max(150, 'Nome da mãe não pode ter mais que 150 caracteres')),
   status: statusEnum.optional().default('rascunho'),
-}), ['nome_pai']); // Passando nome_pai como campo opcional
+}), ['nome_pai', 'nome_mae']); // Passando nome_pai como campo opcional
 
 export const documentoSchema = requiredFields(object({
   url: optional(string().max(240, 'URL não pode ter mais que 240 caracteres')),
