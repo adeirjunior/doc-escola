@@ -1,6 +1,8 @@
 "use server"
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
+import { contaSchema } from "../zod";
+import { ZodError } from "zod";
 
 export async function createUsuario(username: string, nome: string, senha: string) {
     return await prisma.usuario.create({
@@ -31,6 +33,18 @@ export async function findAllUsuarios() {
 export async function updateUsuario(id: string, formData: FormData) {
     const nome = String(formData.get("nome")).toUpperCase();
     const username = String(formData.get("username")).toLocaleLowerCase();
+
+    try {
+        const validAluno = await contaSchema.parseAsync({ nome, username })
+        console.log("Validação bem-sucedida!", validAluno);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            console.log("Erros de validação:", error.errors);
+            throw new Error(error.message)
+        } else {
+            console.error("Erro inesperado:", error);
+        }
+    }
 
     const usuario = await prisma.usuario.update({
         where: { id },

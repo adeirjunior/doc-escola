@@ -40,6 +40,16 @@ export const escolaSchema = requiredFields(object({
   status: statusEnum.optional().default('rascunho'),
 }));
 
+export const contaSchema = requiredFields(object({
+  nome: string()
+    .max(30, 'Nome não pode ter mais que 30 caracteres')
+    .min(3, 'Nome é obrigatório'), 
+  username: string()
+    .max(10, 'Endereço não pode ter mais que 10 caracteres')
+    .min(3, 'Username é obrigatório'),
+}));
+
+
 export const signInSchema = object({
   username: string({ required_error: "Login é obrigatório" })
     .min(1, "Login é obrigatório"),
