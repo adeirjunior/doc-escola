@@ -72,7 +72,7 @@ export function AlunosPopover({ alunos, defaultValue, name }: { name: string, al
                     <Button
                         variant="outline"
                         size="sm"
-                        className="w-[150px] justify-start"
+                        className="justify-start"
                     >
                         {selectedAlunos ? (
                             <>

@@ -56,6 +56,6 @@ export default async function page({ params }: { params: { id: string } }) {
                 <Button form="updateForm">Salvar</Button>
             </CardFooter>
         </Card>
-        <DocumentPDFViewer name="file" url={documento.url!} />
+        <DocumentPDFViewer name="file" url={typeof documento.url !== 'string' ? undefined : documento.url } />
     </form>
 }

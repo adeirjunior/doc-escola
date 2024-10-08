@@ -4,6 +4,7 @@ const nextConfig = {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL
   },
   basePath: process.env.NEXT_PUBLIC_BASE_URL,
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_URL,
   images: {
     unoptimized: true,
   },

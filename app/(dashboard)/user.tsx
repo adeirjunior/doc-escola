@@ -24,7 +24,7 @@ export async function User() {
           className="overflow-hidden rounded-full"
         >
           <Image
-            src={user?.image ?? '/placeholder-user.jpg'}
+            src={user?.image ?? `${process.env.BASE_URL}/placeholder-user.jpg`}
             width={36}
             height={36}
             alt="Avatar"
@@ -43,7 +43,7 @@ export async function User() {
             <form
               action={async () => {
                 'use server';
-                await signOut();
+                await signOut({ redirectTo: process.env.BASE_URL ?? '/' });
               }}
             >
               <button type="submit">Sair</button>

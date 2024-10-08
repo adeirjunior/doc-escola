@@ -33,7 +33,7 @@ export default async function LoginPage({searchParams}: {searchParams: { error: 
               'use server';
               try {
                 const data = Object.fromEntries(formData);
-                await signIn("credentials", { ...data });
+                await signIn("credentials", { ...data, redirectTo: process.env.BASE_URL ?? '/' });
               } catch (error) {
                 if (error instanceof AuthError) {
                   return redirect(`${process.env.NEXTAUTH_URL}${process.env.NEXT_PUBLIC_BASE_URL}/login?error=${error.type}`);
