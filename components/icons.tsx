@@ -110,17 +110,14 @@ export function Logo() {
 
 export function VercelLogo(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      {...props}
-      aria-label="Vercel logomark"
-      height="64"
-      role="img"
-      viewBox="0 0 74 64"
-    >
-      <path
-        d="M37.5896 0.25L74.5396 64.25H0.639648L37.5896 0.25Z"
-        fill="currentColor"
-      ></path>
+    <svg {...props} width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" fill="#599A5A" />
+      <path d="M23.6851 64C41.7664 51.5503 59.2614 33.6329 30.9971 30.3946C0.61516 26.9137 26.5129 10.0329 46.3893 0H63.9603L63.9604 64H23.6851Z" fill="#FFC059" />
+      <circle cx="32" cy="32" r="22.1867" fill="#FFFBFB" />
+      <circle cx="32" cy="32" r="17.0667" fill="#5FBDF9" />
+      <circle cx="32" cy="32" r="11.9467" fill="#FFFBFB" />
+      <path d="M32 23.04L34.0116 29.2312H40.5214L35.2549 33.0576L37.2665 39.2488L32 35.4224L26.7334 39.2488L28.7451 33.0576L23.4785 29.2312H29.9883L32 23.04Z" fill="#FFFBFB" stroke="#5FBDF9" />
     </svg>
+
   );
 }
